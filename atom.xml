@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://github.com/JavaZWT/JavaZWT.github.io/"/>
-  <updated>2018-06-03T13:47:16.510Z</updated>
+  <updated>2018-06-04T15:24:35.319Z</updated>
   <id>https://github.com/JavaZWT/JavaZWT.github.io/</id>
   
   <author>
@@ -15,6 +15,64 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Html5+JQuery页面标签的禁用问题</title>
+    <link href="https://github.com/JavaZWT/JavaZWT.github.io/blog/Html5-JQuery%E9%A1%B5%E9%9D%A2%E6%A0%87%E7%AD%BE%E7%9A%84%E7%A6%81%E7%94%A8%E9%97%AE%E9%A2%9820180604/"/>
+    <id>https://github.com/JavaZWT/JavaZWT.github.io/blog/Html5-JQuery页面标签的禁用问题20180604/</id>
+    <published>2018-06-04T15:17:00.000Z</published>
+    <updated>2018-06-04T15:24:35.319Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在做移动应用项目时遇到的问题，完成某些操作后返回到前面页面要保证前面页面的标签内容不可被编辑，修改。有如下方法：</p><h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><ol><li><p>对于input，select框，设置disabled=’disabled’。</p><p> 如：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#testid1 input'</span>).attr(<span class="string">'disabled'</span>,<span class="string">'disabled'</span>);</span><br><span class="line">$(<span class="string">'#testid2 select'</span>).attr(<span class="string">'disabled'</span>,<span class="string">'disabled'</span>);</span><br></pre></td></tr></table></figure></li><li><p>对于一些点击触发事件的button，可以用unbind()移除事件方法。</p><p> 如：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">".testclass3"</span>).unbind();</span><br></pre></td></tr></table></figure><p> 注：在某些情况下unbind慎用，如页面初始化时调用click事件加载其他事件属性，unbind()可能会导致初始化时无法加载。</p></li><li><p>插件禁用，有些页面可能使用某些插件，对于插件的禁用，可以设置插件的事件方法return false;</p><p> 如：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">"#test #test4"</span>).on(<span class="string">"touchmove"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><p> 这个是我们项目一个滑动插件触摸禁用的例子。</p></li><li><p>对于一些比较特殊的，如li标签，可以使用class样式进行处理。</p><p> 这是一个两个li标签切换禁用的例子。</p><p> 例：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">"#test_li"</span>).addClass(<span class="string">'disabledTab'</span>);</span><br><span class="line">.disabledTab&#123;</span><br><span class="line">   pointer-events: none;<span class="comment">//这样鼠标或触摸就无法选中li标签</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;在做移动应用项目时遇到的问题，完成某些操作后返回到前面页面要保证前面页面的标签内容不可被编辑，修改。有如下方法：&lt;/p&gt;
+&lt;h2 id=&quot;方
+      
+    
+    </summary>
+    
+      <category term="技术" scheme="https://github.com/JavaZWT/JavaZWT.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="HTML" scheme="https://github.com/JavaZWT/JavaZWT.github.io/tags/HTML/"/>
+    
+      <category term="JQuery" scheme="https://github.com/JavaZWT/JavaZWT.github.io/tags/JQuery/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>阿里云主机环境搭建</title>
+    <link href="https://github.com/JavaZWT/JavaZWT.github.io/blog/%E9%98%BF%E9%87%8C%E4%BA%91%E4%B8%BB%E6%9C%BA%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA20180604/"/>
+    <id>https://github.com/JavaZWT/JavaZWT.github.io/blog/阿里云主机环境搭建20180604/</id>
+    <published>2018-06-04T15:00:00.000Z</published>
+    <updated>2018-06-04T15:17:00.401Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>现在很多服务都部署在云服务上，最近项目也要发布到云上，特写此文章。有需要部署云服务的小伙伴可以参考下。</p><h2 id="云主机参数"><a href="#云主机参数" class="headerlink" title="云主机参数"></a>云主机参数</h2><p>在部署云服务时，一般需要知道如下参数：</p><ol><li>云ECS主机服务器远程连接：<br> url       XXXXXXXX<br> 用户名：XXXXXXX<br> 密码：XXXXXXX<br> 超级管理员：用户名：XXXX    密码  ：XXXX    </li><li>硬件配置：<br> 实例规格：2 核 4GB<br> 网络：带宽 5Mbps<br> 操作系统：Ubuntu 16.04 64位<br> 系统盘：高效云盘（100 GB）</li></ol><h2 id="工具准备"><a href="#工具准备" class="headerlink" title="工具准备"></a>工具准备</h2><h3 id="远程连接工具"><a href="#远程连接工具" class="headerlink" title="远程连接工具"></a>远程连接工具</h3><ol><li>XShell连接工具  </li><li>Xftp文件上传管理工具  </li><li>两工具下载地址：<a href="https://www.netsarang.com/products/xsh_overview.html" target="_blank" rel="noopener">https://www.netsarang.com/products/xsh_overview.html</a></li><li>其他说明：由于当前Ubuntu 16.04 64位 Linux系统弃用了一些旧的远程ssh加密方式，故原先的ssh2工具不能连接，当然也可以修改linux配置文件使其支持旧的ssh加密方式，详见<a href="http://blog.csdn.net/liucky/article/details/51889112" target="_blank" rel="noopener">http://blog.csdn.net/liucky/article/details/51889112</a> 等文章。本服务器未修改也不建议修改linux配置，进而选择使用XSHell等工具连接。</li></ol><h3 id="服务器搭建工具"><a href="#服务器搭建工具" class="headerlink" title="服务器搭建工具"></a>服务器搭建工具</h3><ol><li>Linux 64位  jdk压缩包      jdk-7u79-linux-x64.tar.gz</li><li>Tomcat压缩包 For Linux 64     apache-tomcat-7.0.79.tar.gz</li><li>Linux 64位 Mysql 安装包    （在线安装可不使用）  mysql-5.7.19-linux-glibc2.12-x86_64.tar.gz</li><li>编译好的项目    demo</li><li>数据库表  demo</li></ol><h2 id="连接云主机"><a href="#连接云主机" class="headerlink" title="连接云主机"></a>连接云主机</h2><ol><li><p>连接到Linux服务器</p><p> 打开XShell，输入前面的云主机配置，连接到Linux远程服务器。如图：</p></li></ol><p><img src="/images/pasted-8.png" alt="upload successful"></p><ol start="2"><li><p>登录成功后如图</p><p> 使用 pwd 命令可查看当前路径</p><p> 目前/home   文件夹下已使xxxxxx用户拥有读、写、执行的权限</p></li></ol><p><img src="/images/pasted-9.png" alt="upload successful"></p><h2 id="上传文件"><a href="#上传文件" class="headerlink" title="上传文件"></a>上传文件</h2><ol><li><p>进入/home文件夹</p><p> 我们在其目录下建三个文件夹jdk,mysql,tomcat用于存放文件</p></li><li><p>创建文件夹，可以使用 mkdir  文件夹名   这种方式，也可以直接打开xftp 创建，如图：</p></li></ol><p><img src="/images/pasted-10.png" alt="upload successful"></p><ol start="3"><li><p>上传并解压</p><p> 通过Xftp将 jdk，tomcat，mysql，项目包demo，数据表全部传上去</p><p> 对于tar.gz文件进行解压</p><p> tar -xzvf jdk-7u79-linux-x64.tar.gz</p><p> 注意：项目demo要放到tomcat  webapps目录下，故建议将tomcat</p><p> 解压后再上传demo项目</p></li></ol><h2 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h2><ol><li>找到jdk路径</li><li><p>同时找到 /etc/profile<br> 使用vi /etc/profile<br> 编辑该文件，设置环境变量<br> export JAVA_HOME=”/home/jdk/jdk1.7.0_79”<br> export PATH=”$PATH:$JAVA_HOME/bin”<br> export JRE_HOME=”$JAVA_HOME/jre”<br> export CLASSPATH=”.:$JAVA_HOME/lib:$JRE_HOME/lib”</p><p> 或者通过Xftp把profile文件down下来，修改好后再上传回去</p></li><li><p>弄好后要使用source /etc/profile 命令进行更新使其变量生效</p></li><li><p>同时 使用命令<br> java -version<br> java<br> javac</p><p> 正常则表示配置成功了</p></li></ol><p><img src="/images/pasted-11.png" alt="upload successful"></p><h2 id="启动Tomcat"><a href="#启动Tomcat" class="headerlink" title="启动Tomcat"></a>启动Tomcat</h2><ol><li>由于tomcat自带的startup.sh脚本看不到日志输出，因此写了个脚本startTomcat.sh脚本</li><li>进入到tomcat  bin目录下，使用命令  sh startTomcat.sh 启动tomcat，看到starup毫秒数表示启动成功。</li><li>启动后，在本地机器上访问 <a href="http://xxxxxxxxxxx:8080/" target="_blank" rel="noopener">http://xxxxxxxxxxx:8080/</a>  可以看到久违的tomcat页面</li><li><p>bin里的shutdown.sh用于停止tomcat服务，sh shutdown.sh</p></li><li><p>成功后上传项目 demo到 tomcat webapps文件夹</p></li></ol><p><img src="/images/pasted-12.png" alt="upload successful"></p><h2 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h2><p>接下来开始安装Mysql</p><ol><li>对于阿里云，我们可以采取在线安装的方式快速安装MySQL<br> 使用Linux  root用户登录，<br> 使用命令：<br> sudo apt-get install mysql-server<br> apt-get isntall mysql-client<br> sudo apt-get install libmysqlclient-dev</li><li>安装过程中会提示输入root用户密码，设置所需的root用户密码即可。</li><li><p>使用以下命令查看MySQL是否安装成功<br> sudo netstat -tap | grep mysql<br> 可以看到MySQL处于listen状态，配置成功。</p><p> 关于离线安装，暂时没弄成功，有时间在补上。</p></li></ol><h2 id="导入数据表"><a href="#导入数据表" class="headerlink" title="导入数据表"></a>导入数据表</h2><p>将数据表数据导入到MySQL数据库。<br>mysql命令<br>service mysql start 启动<br>service mysql stop  停止</p><p>service mysql restart  重启</p><ol><li><p>使用root用户登录MySQ</p><p> mysql -u root -p<br> 输入密码登录成功。</p></li><li><p>设置必要数据</p><p> 进入mysql命令行<br> 查看数据库编码还有表名大小写情况（Linux系统下MySQL表名会区分大小写）</p><p> 查看字符编码<br> mysql&gt; show variables like ‘character%’;<br> 查看表名大小写<br> mysql&gt; show Variables like ‘%table_names’;<br> 如果不是utf-8编码（右图所示为utf-8编码格式），表名默认区分大小写<br> lower_case_table_names=0<br> 则需要修改默认配置<br> cd etc/mysql/mysql.conf.d/<br> vi    mysqld.cnf<br> 加入如下配置：<br> character-set-server=utf8<br> collation-server=utf8_general_ci<br> skip-character-set-client-handshake<br> lower_case_table_names=1</p><p> 重启mysql服务</p></li><li><p>开启访问权限</p><p> 我们可以在开启外网MySQL访问权限在Windows机器上用GUI工具导入MySQL表数据<br> 开启外网权限：<br> mysql&gt; SELECT User, Host FROM mysql.user;<br> mysql&gt; update user set host = ‘%’ where user =’root’;<br> mysql&gt; flush privileges;<br> 同时将etc/mysql/mysql.conf.d/mysqld.cnf  配置文件里的<br> bind-address    = 127.0.0.1注释掉。</p></li><li><p>这样在MySQL可视化工具如Navicat上远程连接MySQL，设置utf-8编码格式后将数据表导入即可。</p></li></ol><h2 id="注意事项及其他"><a href="#注意事项及其他" class="headerlink" title="注意事项及其他"></a>注意事项及其他</h2><ol><li><p>启动tomcat及MySQL后，通过外网便可以正常访问项目。输入用户名密码后登陆。</p></li><li><p>注意事项。<br> 使用root用户时，应尽量减少敏感操作，如 rm ， mv  ，cp  -r  等命令的执行。<br> tomcat请使用tomcat用户启动，不建议使用root用户启动。<br> MySQL开启外网访问后，如果无法访问，可能是阿里云禁用了3306端口的外网访问，需要登录阿里云开启，当成功导入数据后，十分建议关闭MySQL远程访问权限。<br> 如果要设置tomcat默认端口为80，也需要登录阿里云设置。<br> 如果操作过程中出现异常破坏了Linux系统，可以登录阿里云进行系统还原。<br> 部署项目时，项目的一些配置文件如数据库连接，请求地址一定要配置正确。<br> 如果要设置tomcat默认端口为80，则需要用root启动，因为linux只有root才能启动1024以内的端口，同时需要修改tomcat  server.xml配置文件及demo访问地址。</p></li></ol><h2 id="文档PPT"><a href="#文档PPT" class="headerlink" title="文档PPT"></a>文档PPT</h2><p>简单阿里云主机搭建文档资源：<a href="https://download.csdn.net/download/javazwt/10448764" target="_blank" rel="noopener">https://download.csdn.net/download/javazwt/10448764</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;现在很多服务都部署在云服务上，最近项目也要发布到云上，特写此文章。有需要部署云服务的小伙伴可以参考下。&lt;/p&gt;
+&lt;h2 id=&quot;云主机参数&quot;
+      
+    
+    </summary>
+    
+      <category term="技术" scheme="https://github.com/JavaZWT/JavaZWT.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+      <category term="云服务" scheme="https://github.com/JavaZWT/JavaZWT.github.io/tags/%E4%BA%91%E6%9C%8D%E5%8A%A1/"/>
+    
+      <category term="运维" scheme="https://github.com/JavaZWT/JavaZWT.github.io/tags/%E8%BF%90%E7%BB%B4/"/>
+    
+      <category term="Linux" scheme="https://github.com/JavaZWT/JavaZWT.github.io/tags/Linux/"/>
+    
+  </entry>
   
   <entry>
     <title>短视频Test</title>
