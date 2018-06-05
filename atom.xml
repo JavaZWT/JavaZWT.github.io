@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://github.com/JavaZWT/JavaZWT.github.io/"/>
-  <updated>2018-06-04T15:24:35.319Z</updated>
+  <updated>2018-06-05T15:34:42.492Z</updated>
   <id>https://github.com/JavaZWT/JavaZWT.github.io/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MarkDown语法</title>
+    <link href="https://github.com/JavaZWT/JavaZWT.github.io/blog/MarkDown%E8%AF%AD%E6%B3%9520180605/"/>
+    <id>https://github.com/JavaZWT/JavaZWT.github.io/blog/MarkDown语法20180605/</id>
+    <published>2018-06-05T14:17:00.000Z</published>
+    <updated>2018-06-05T15:34:42.492Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近自己搭建了一个博客网站，写文章时用到了markdown语法，之前虽未接触过markdown语法，但在两三天的使用过程中感觉markdown语法很棒，写法简洁，而且支持Html语言。特总结一些常用的语法如下：</p><h2 id="语法汇总"><a href="#语法汇总" class="headerlink" title="语法汇总"></a>语法汇总</h2><h3 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h3><p>markdown有6种标题，写法如下：</p><table><thead><tr><th>级别</th><th style="text-align:center">写法</th></tr></thead><tbody><tr><td>1级</td><td style="text-align:center"># 大标题</td></tr><tr><td>2级</td><td style="text-align:center">## 前言</td></tr><tr><td>3级</td><td style="text-align:center">### 语法汇总</td></tr><tr><td>4级</td><td style="text-align:center">#### 标题</td></tr><tr><td>5级</td><td style="text-align:center">##### 标题5</td></tr><tr><td>6级</td><td style="text-align:center">###### 标题6</td></tr></tbody></table><p><strong>注意：</strong>#号和文字之间有空格</p><h3 id="段落"><a href="#段落" class="headerlink" title="段落"></a>段落</h3><p>写完一段话，一般空出一行便可以分为两个段落，如果不主动空行，其便会认为为一个段落。<br>也可以在一段话的结束输入两个空格，markdown也会换行。</p><p><strong>注意：</strong>这两种换行，第一种间距大。我现在这段话分别用了空格换行和空行换行。</p><h3 id="tab键"><a href="#tab键" class="headerlink" title="tab键"></a>tab键</h3><pre><code>这是一段用了tab缩进的话。    这是用了两个tab缩进的话。这是一段很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长很长的话。</code></pre><p><strong>注意：</strong>当一段话过长时，这样生成的句子可能不换行，而是在下面有一个拉动条。</p><h3 id="资源引用"><a href="#资源引用" class="headerlink" title="资源引用"></a>资源引用</h3><ol><li><p>引用静态资源时，如img，png，gif等</p><p> 语法：![图片名称](图片的绝对路径或者相对路径)</p><pre><code>![upload successful](/images/pasted-10.png)</code></pre></li><li><p>引用网址时，直接贴上网址就能识别</p><p> 我的博客：<a href="https://javazwt.github.io/" target="_blank" rel="noopener">https://javazwt.github.io/</a></p></li></ol><h3 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h3><p>语法：</p><pre><code>| Name        |      Value   | |-------------|:-----------: || sakuratears |  999999      |  </code></pre><p>效果：</p><table><thead><tr><th>Name</th><th style="text-align:center">Value</th></tr></thead><tbody><tr><td>sakuratears</td><td style="text-align:center">999999</td></tr></tbody></table><p><strong>注意：</strong>在表头下方的分隔线标记中加入 :，即可标记下方单元格内容的对齐方式，默认左对齐：</p><p>:— 代表左对齐<br>:–: 代表居中对齐<br>—: 代表右对齐</p><table><thead><tr><th style="text-align:left">left（:— ）</th><th style="text-align:center">center（:—-: ）</th><th style="text-align:right">right（ —-:）</th></tr></thead><tbody><tr><td style="text-align:left">left</td><td style="text-align:center">center</td><td style="text-align:right">right</td></tr></tbody></table><h3 id="加粗-斜体-删除线"><a href="#加粗-斜体-删除线" class="headerlink" title="加粗 斜体 删除线"></a>加粗 斜体 删除线</h3><p>加粗语法： **要加粗的字**</p><p>加粗效果： <strong>要加粗的字</strong></p><p>斜体语法：*斜体的字*</p><p>斜体效果： <em>斜体的字</em></p><p>删除线语法： ~~要删除的字~~</p><p>删除线效果： <del>要删除的字</del></p><h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><p>如果需要引用文献资料或者别的引用，可以用大于号解决：</p><p>语法：&gt;要引用的文字</p><p>效果：</p><blockquote><p>要引用的文字</p></blockquote><h3 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h3><h4 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h4><p>语法：在指定序号后面加上点（.） 并空格 </p><pre><code>1. aaa2. bbb3. ccc</code></pre><p>效果：</p><ol><li>aaa</li><li>bbb</li><li>ccc</li></ol><h4 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h4><p>语法：在文字前面加上* 或者 + 或者 - 并空格</p><pre><code>* aaa* bbb* ccc</code></pre><p>效果：</p><ul><li>aaa</li><li>bbb</li><li>ccc</li></ul><p><strong>注意：</strong> 如果生成多级列表，可以这样：</p><pre><code>- 1.a    - 1.1.aa        - 1.1.1.aaa- 2.b- 3.c</code></pre><p>效果图：</p><ul><li>1.a<ul><li>1.1.aa<ul><li>1.1.1.aaa</li></ul></li></ul></li><li>2.b</li><li>3.c</li></ul><h3 id="代码支持"><a href="#代码支持" class="headerlink" title="代码支持"></a>代码支持</h3><p>语法：</p><pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">//代码片段</span><br></pre></td></tr></table></figure></code></pre><p>效果：一段java代码</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(<span class="string">"Hello World"</span>);</span><br></pre></td></tr></table></figure><h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><p>由于Markdown支持Html语法，故Markdown以上无法实现的可以借助Html实现，如居中实现：</p><pre><code>&lt;center&gt;这段话要居中&lt;/center&gt;</code></pre><p>效果：<center>这段话要居中</center></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;最近自己搭建了一个博客网站，写文章时用到了markdown语法，之前虽未接触过markdown语法，但在两三天的使用过程中感觉markdow
+      
+    
+    </summary>
+    
+      <category term="技术" scheme="https://github.com/JavaZWT/JavaZWT.github.io/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="学习" scheme="https://github.com/JavaZWT/JavaZWT.github.io/categories/%E6%8A%80%E6%9C%AF/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="MarkDown" scheme="https://github.com/JavaZWT/JavaZWT.github.io/tags/MarkDown/"/>
+    
+      <category term="语法" scheme="https://github.com/JavaZWT/JavaZWT.github.io/tags/%E8%AF%AD%E6%B3%95/"/>
+    
+  </entry>
   
   <entry>
     <title>Html5+JQuery页面标签的禁用问题</title>
