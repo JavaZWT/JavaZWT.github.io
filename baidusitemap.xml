@@ -5,12 +5,32 @@
     
   <url>
     <loc>https://www.sakuratears.top/blog/%E6%9C%AA%E9%97%BB%E8%8A%B1%E5%90%8D20180609/</loc>
-    <lastmod>2018-06-09T14:46:40.715Z</lastmod>
+    <lastmod>2018-06-09T16:41:48.378Z</lastmod>
     <data>
         <display>
         <title>未闻花名</title>
-        <pubTime>2018-06-09T14:30:07.000Z</pubTime>
+        <pubTime>2018-06-09T14:30:00.000Z</pubTime>
         
+         
+           
+             
+              <breadCrumb title="生活" url="https://www.sakuratears.top/categories/%E7%94%9F%E6%B4%BB/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>https://www.sakuratears.top/blog/%E7%9F%AD%E8%A7%86%E9%A2%91Test20180603/</loc>
+    <lastmod>2018-06-09T16:41:16.142Z</lastmod>
+    <data>
+        <display>
+        <title>短视频Test</title>
+        <pubTime>2018-06-03T12:58:00.000Z</pubTime>
+        
+        <tag>短视频</tag>
+         
          
            
         </display>
@@ -86,21 +106,6 @@
              
               <breadCrumb title="技术" url="https://www.sakuratears.top/categories/%E6%8A%80%E6%9C%AF/"/>
           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>https://www.sakuratears.top/blog/%E7%9F%AD%E8%A7%86%E9%A2%91Test20180603/</loc>
-    <lastmod>2018-06-03T13:47:16.510Z</lastmod>
-    <data>
-        <display>
-        <title>短视频Test</title>
-        <pubTime>2018-06-03T12:58:08.000Z</pubTime>
-        
-         
-           
         </display>
     </data>
     </url>

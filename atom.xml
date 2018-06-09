@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.sakuratears.top/"/>
-  <updated>2018-06-09T14:46:40.715Z</updated>
+  <updated>2018-06-09T16:41:48.378Z</updated>
   <id>https://www.sakuratears.top/</id>
   
   <author>
@@ -20,8 +20,8 @@
     <title>未闻花名</title>
     <link href="https://www.sakuratears.top/blog/%E6%9C%AA%E9%97%BB%E8%8A%B1%E5%90%8D20180609/"/>
     <id>https://www.sakuratears.top/blog/未闻花名20180609/</id>
-    <published>2018-06-09T14:30:07.000Z</published>
-    <updated>2018-06-09T14:46:40.715Z</updated>
+    <published>2018-06-09T14:30:00.000Z</published>
+    <updated>2018-06-09T16:41:48.378Z</updated>
     
     <content type="html"><![CDATA[<center>已知花意</center><br><center>未见其花</center><br><center>已见其花</center><br><center>未闻花名</center><br><center>再见其花</center><br><center>落泪千溟</center><br><center>未闻花名</center><br><center>但识花香</center><br><center>已知花名</center><br><center>花已不在</center><br><center>未闻花名</center><br><center>但识花香</center><br><center>再遇花时</center><br><center>泪已千行</center><p><br></p><blockquote><hr></blockquote><blockquote><p>某天，你无端想起一个人，她曾让你对明天有所期许，但她却完全没有出现在你的明天里。————《再见金华站》</p></blockquote>]]></content>
     
@@ -33,6 +33,8 @@
       
     
     </summary>
+    
+      <category term="生活" scheme="https://www.sakuratears.top/categories/%E7%94%9F%E6%B4%BB/"/>
     
     
   </entry>
@@ -128,8 +130,8 @@
     <title>短视频Test</title>
     <link href="https://www.sakuratears.top/blog/%E7%9F%AD%E8%A7%86%E9%A2%91Test20180603/"/>
     <id>https://www.sakuratears.top/blog/短视频Test20180603/</id>
-    <published>2018-06-03T12:58:08.000Z</published>
-    <updated>2018-06-03T13:47:16.510Z</updated>
+    <published>2018-06-03T12:58:00.000Z</published>
+    <updated>2018-06-09T16:41:16.142Z</updated>
     
     <content type="html"><![CDATA[<div><br>  <center><strong>短视频</strong></center><br>  <br><br>  <video controls="controls" autoplay="autoplay"><br>  <source src="/video/video0.mp4" type="video/mp4"><br>    (天涯明月刀)刀妹的视频<br>  </video><br></div>]]></content>
     
@@ -142,6 +144,8 @@
     
     </summary>
     
+    
+      <category term="短视频" scheme="https://www.sakuratears.top/tags/%E7%9F%AD%E8%A7%86%E9%A2%91/"/>
     
   </entry>
   

@@ -4,6 +4,9 @@
     <title><![CDATA[未闻花名]]></title>
     <url>%2Fblog%2F%E6%9C%AA%E9%97%BB%E8%8A%B1%E5%90%8D20180609%2F</url>
     <content type="text"><![CDATA[已知花意未见其花已见其花未闻花名再见其花落泪千溟未闻花名但识花香已知花名花已不在未闻花名但识花香再遇花时泪已千行 某天，你无端想起一个人，她曾让你对明天有所期许，但她却完全没有出现在你的明天里。————《再见金华站》]]></content>
+      <categories>
+        <category>生活</category>
+      </categories>
   </entry>
   <entry>
     <title><![CDATA[MarkDown语法]]></title>
@@ -47,6 +50,9 @@
     <title><![CDATA[短视频Test]]></title>
     <url>%2Fblog%2F%E7%9F%AD%E8%A7%86%E9%A2%91Test20180603%2F</url>
     <content type="text"><![CDATA[短视频 (天涯明月刀)刀妹的视频]]></content>
+      <tags>
+        <tag>短视频</tag>
+      </tags>
   </entry>
   <entry>
     <title><![CDATA[Java排序算法]]></title>
