@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.sakuratears.top/"/>
-  <updated>2018-07-03T06:43:17.032Z</updated>
+  <updated>2018-07-07T09:42:05.828Z</updated>
   <id>https://www.sakuratears.top/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>数据传输安全性保证</title>
+    <link href="https://www.sakuratears.top/blog/%E6%B5%85%E8%B0%88HTTP%E4%B8%8EHTTPS20180707/"/>
+    <id>https://www.sakuratears.top/blog/浅谈HTTP与HTTPS20180707/</id>
+    <published>2018-07-07T07:49:00.000Z</published>
+    <updated>2018-07-07T09:42:05.828Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>数据传输过程中，安全性十分重要，尤其是对于一些敏感的用户信息，其安全性保证更应当被重视。</p><p>现代软件开发中，无论是基于敏捷式的软件开发，或者基于前后端分离的软件开发，都离不开提供对外接口，而请求这些接口数据的安全性应当得到保证。</p><h1 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h1><p>保证传输数据的安全性，主要有以下方法：</p><ol><li><p><strong>数据加密</strong></p><p> 数据加密一直是保密数据的重要部分，常见的加密算法有可逆加密算法和不可逆加密算法，可逆加密算法又分为对称加密算法和非对称加密算法。</p><p> 比如一个系统的登陆操作，客户输入用户名登陆，如果不进行任何保障措施，用户名和密码明文传输，被不法分子截获数据后，显然是不安全的。如果我们这时对密码进行不可逆加密，如md5，对用户名进行可逆加密，如des，这时候在截获数据时，得到的将是一串密文，显然，即使要破解，也需要相当时间。</p><p> 但这样，有一个明显问题，就是接口吞吐量下降，明显，加密情况下，由于需要解密数据，接口的响应速度会下降。</p><p> 可能，对于一些非重要数据，我们这样牺牲系统性能换取来的安全可能有些过了。</p></li><li><p><strong>数据签名</strong></p><p>  数据签名又是什么呢？它和数据加密的区别呢？</p><p> 数据签名，相当于对传输的数据，进行一些不可逆加密算法后，如md5，生成一段签名字符串sign。</p><p> 比如上述列子中，登陆操作中如果还要传输IP，地点等等数据，这些数据明显没那么重要，这时可以对全部传输数据进行签名，生成sign，将其传入后端，后端用同样算法及密钥计算比较sign，如果一致认为数据正确，直接拿到IP，地点等数据（不用解密，相对于解密各个信息，理论上所有信息计算签名要节省时间），不一致则认为被修改过，返回错误信息。</p></li><li><p><strong>session，token机制</strong></p><p>  session（cookie）和token机制的出现是为了校验用户状态的。</p><p> 比如不法分子知道了我们的后台接口，恶意伪造大量数据攻击，即使这些数据不正确，而服务器每次都需要校验这些数据的正确性，显然带来大量性能消耗。</p><p> 我们当然可以进行一些优化操作，如对于同一个IP，短时间大量请求则封掉该IP一段时间，但这不是太合理的。</p><p> 设想，如果用户登陆后，保存状态，只有登陆的用户可以访问这些接口，每次请求到来，均先校验用户登陆状态，对于session，如果没有sessionid或者sessionid错误或者过期则直接返回登陆界面。对于token，与session同理，没有token或者token错误或者过期的直接返回登陆页面。</p><p> 这样，我们开始校验token或者session，就可以拒绝大量伪造请求。</p></li><li><p><strong>Https（数字证书机制）</strong></p><p>   上面，无论数据加密还是签名，我们发现最重要的就是加密方法和加密密钥。</p><p> 对于两台服务器交互，可能不用太担心，但是如果是webapp或者原生app，不法分子反编译前端代码后，就有可能拿到加密方法和加密key，怎么办呢？</p><p> 这就属于Https要解决的事情，下篇文章会介绍https，这儿先简单说下：</p><p> 在加密算法中，有一种叫做非对称加密的算法，有公钥和私钥组成，他有个特点：公钥加密的数据，只有私钥能解密；私钥加密的数据，只有公钥能解密。</p><p> https就是需要让客户端与服务器端安全地协商出一个对称加密算法。剩下的就是通信时双方使用这个对称加密算法进行加密解密。</p><p> ①客户端启动，发送请求到服务端，服务端通过非对称加密算法（如RSA）生成公钥pubkey1和私钥prikey1。</p><p> ②服务端将公钥pubkey1发给客户端，客户端用自己的非对称加密算法也生成一套公钥pubkey2和私钥prikey2，并将公钥pubkey2通过pubkey1加密后返回服务端。</p><p> ③服务端用私钥prikey1解密后拿到pubkey2，并将确定好的未来交互的对称加密算法和密钥通过pubkey2加密，返回客户端。</p><p> ④客户端用私钥pubkey2解密数据，拿到服务器给定的加密算法和密钥，双方开始用其数据通信。</p><p> 这样仍有一个问题，如何证明公钥pubkey1加密的这串数字是客户端来的，即证明他就是他。。。</p><p> 这就是https的数字证书，相当于网络中心的部分，证明他就是他。数字证书就是来干这个的。</p></li><li><p><strong>其他</strong></p><p>安全性保证还有其他可以自己操作的方法。</p><p>如对于两台稳定的服务器交互，直接进行IP校验或许比token，session机制更好更方便。及一些其他的操作，如同一IP短时间大量错误报文，可以将其暂时拉入黑名单。等等。</p></li></ol><h1 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h1><p>数据安全一直是数据交互的永恒话题，保证数据安全，肯定是需要消耗一定的系统性能的。如何选择合适的安全保证机制，是每一个软件开发工程师应该了解和掌握的。</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;数据传输过程中，安全性十分重要，尤其是对于一些敏感的用户信息，其安全性保证更应当被重视。&lt;/p&gt;
+&lt;p&gt;现代软件开发中，无论是基于敏捷式的软
+      
+    
+    </summary>
+    
+      <category term="学习" scheme="https://www.sakuratears.top/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="Java" scheme="https://www.sakuratears.top/tags/Java/"/>
+    
+  </entry>
   
   <entry>
     <title>UTF-8和GBK等编码格式转换问题</title>
@@ -240,9 +266,9 @@
       <category term="学习" scheme="https://www.sakuratears.top/categories/%E5%AD%A6%E4%B9%A0/"/>
     
     
-      <category term="Java" scheme="https://www.sakuratears.top/tags/Java/"/>
-    
       <category term="JavaScript" scheme="https://www.sakuratears.top/tags/JavaScript/"/>
+    
+      <category term="Java" scheme="https://www.sakuratears.top/tags/Java/"/>
     
   </entry>
   
