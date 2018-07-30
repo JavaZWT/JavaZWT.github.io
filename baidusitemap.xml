@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>https://www.sakuratears.top/blog/%E4%B8%80%E6%AC%BE%E5%9F%BA%E4%BA%8EJQuery%E5%92%8Cbootstrap%E7%9A%84%E5%8D%95%E9%A1%B5%E9%9D%A2WebApp%E6%A1%86%E6%9E%B620180730/</loc>
+    <lastmod>2018-07-30T10:42:44.936Z</lastmod>
+    <data>
+        <display>
+        <title>一款基于JQuery和bootstrap的单页面WebApp框架</title>
+        <pubTime>2018-07-30T08:25:00.000Z</pubTime>
+        
+        <tag>JavaScript</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习" url="https://www.sakuratears.top/categories/%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://www.sakuratears.top/blog/Java-Stack%E7%B1%BB%E7%AE%80%E4%BB%8B20180726/</loc>
     <lastmod>2018-07-28T16:19:43.234Z</lastmod>
     <data>
@@ -286,9 +306,9 @@
         <title>Java排序算法</title>
         <pubTime>2018-06-02T15:25:00.000Z</pubTime>
         
-        <tag>Java</tag>
-         
         <tag>JavaScript</tag>
+         
+        <tag>Java</tag>
          
          
            
