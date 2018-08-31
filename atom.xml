@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://www.sakuratears.top/"/>
-  <updated>2018-08-29T13:24:10.269Z</updated>
+  <updated>2018-08-31T13:35:47.260Z</updated>
   <id>https://www.sakuratears.top/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>（转）线上某应用的FULLGC分析</title>
+    <link href="https://www.sakuratears.top/blog/%E8%BD%AC-%E7%BA%BF%E4%B8%8A%E6%9F%90%E5%BA%94%E7%94%A8%E7%9A%84FULLGC%E5%88%86%E6%9E%9020180831/"/>
+    <id>https://www.sakuratears.top/blog/转-线上某应用的FULLGC分析20180831/</id>
+    <published>2018-08-31T13:28:00.000Z</published>
+    <updated>2018-08-31T13:35:47.260Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>原文链接：<a href="http://jm.taobao.org/2016/03/23/3782/" target="_blank" rel="noopener">http://jm.taobao.org/2016/03/23/3782/</a></p></blockquote><p>这2天，排除线上某应用启动内存变化频繁的问题时，额外发现了一个fullgc的问题，分享给大家。</p><p>过程如下：抽了台线上机器，想看下这段时间机器的gc情况，发现里面有好几个FullGc的日志：</p><pre><code>T23:23:02.009+0800: 21860.015: [Full GC 21860.015: [CMS: 2361237K-&amp;gt;1111804K(4718592K), 4.9917540 secs] 2532961K-&amp;gt;1111804K(5190464K), [CMS Perm : 17397K-&amp;gt;17240K(131072K)], 4.9918770 secs] [Times: user=4.96 sys=0.03, real=4.99 secs]</code></pre><p>JVM参数设置如下：</p><pre><code>-XX:+UseCMSInitiatingOccupancyOnly-XX:CMSInitiatingOccupancyFraction=60</code></pre><p>参数的意思是：在旧区到60％的时候，会触发一次cmsgc，应该出现如下日志：</p><pre><code>T20:10:37.803+0800: 3246087.559: [CMS-concurrent-mark-start]T20:10:38.463+0800: 3246088.220: [CMS-concurrent-mark: 0.661/0.661 secs] [Times: user=3.17 sys=0.56, real=0.66 secs]T20:10:38.463+0800: 3246088.220: [CMS-concurrent-preclean-start]T20:10:38.552+0800: 3246088.309: [CMS-concurrent-preclean: 0.069/0.089 secs] [Times: user=0.14 sys=0.04, real=0.09 secs]_&lt;/span&gt;T20:10:38.552+0800: 3246088.309: [CMS-concurrent-abortable-preclean-start]</code></pre><p>而现在日志里面都是old区到2.3G（50%）的时候，就会触发一次FullGc，而且gc日志里面没有一次正常的cmsgc，现在是什么原因在半路截胡了？</p><p>开始怀疑JVM参数是否设置生效，通过jinfo进行查看：</p><pre><code>jinfo -flag UseCMSInitiatingOccupancyOnly 20195jinfo -flag CMSInitiatingOccupancyFraction 20195</code></pre><p>一切正常。</p><p>出现Fullgc，当时我想可能的原因有以下几个情况：</p><ol><li>cmsgc失败导致（GC日志中没有相关cmsgc失败的日志）</li><li>JMAP -histo：现场（人为执行肯定不是）</li><li>大对象分配时，空间不够导致（当时还剩下50%内存，并且如果大对象分配，gc日志里面是会有如下WARN的）</li><li>内存碎片导致？（由于系统会经常分配一些大数组，这个会加剧碎片化）</li></ol><p>第四点是最可能的原因了。于是，接下来怎么验证是否是它导致的呢？加上PrintGCReason，先打印出fullgc的原因,</p><p>命令如下：</p><pre><code>/java/bin/jinfo -flag +PrintGCReason</code></pre><p>第二天，查看日志，如下：</p><pre><code>GC Cause: Heap Inspection Initiated GC T16:16:01.880+0800: 687439.886: [Full GC 687439.886: [CMS: 2362138K-&amp;gt;1180717K(4718592K), 5.6573690 secs] 2700275K-&amp;gt;1180717K(5190464K), [C MS Perm : 17531K-&amp;gt;17488K(131072K)], 5.6574950 secs] [Times: user=5.59 sys=0.06, real=5.65 secs]</code></pre><p>GC原因：堆检查启动GC，FullGc的原因是这个，看不明白，咨询过后，说这个很可能是因为JAMP -hist继：活导致的FullGc。</p><p>那如果是这样，就有可能是有脚本或者定时任务，也可能是什么其他东西，去执行了这个命令，反正据我了解的cs没有做这事。接下来就是找这个“凶手”了，这事情没做过，没啥头绪，看进程也看不出什么，想grep所有脚本，懒癌又发作了，还是先去群里咨询下有啥简单又省力的办法吧，一下搞定：</p><pre><code>[ ~]$ crontab -l */1 * * * * /home/bin/config-monitor.sh &amp;gt;&amp;gt; /home/logs/config-monitor.log 2&amp;gt;&amp;amp;1 [logs]$ cat /home/bin/config-monitor.sh |grep &quot;jmap&quot; jmaplog=&quot;/home/jmap.log&quot;; if (count == 3) { / run jmap print &quot;run jmap command : /java/bin/jmap -histo:live &quot;pid&quot; |head -n 20&quot;; system(&quot;/java/bin/jmap -histo:live &quot;pid&quot; |head -n 20&quot;)&amp;gt;jmaplog; print &quot;#######Server has recovered after running jmap######&quot;;</code></pre><p>有个定时任务跑一个叫config-monitor.sh的脚本，里面做的事情，基本就是监视内存各个区的比例，超过一定比例，就通过jamp -histo：现场触发下fullgc，防止溢出===》这个定时任务是cs以前遗留下来的，一直没发现，后续就是评估是否去掉这个定时任务，整个过程告一段落。</p><p>总结：</p><ol><li>问题可能出现的原因，要尽快动手去验证，不要只停留在思考的层面;</li><li>出现fullgc的时候，可以通过加上PrintGCReason，查看具体GC原因。</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;原文链接：&lt;a href=&quot;http://jm.taobao.org/2016/03/23/3782/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;http://jm.taobao.org/2016/03/23/3782/&lt;/a
+      
+    
+    </summary>
+    
+      <category term="学习" scheme="https://www.sakuratears.top/categories/%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+      <category term="Java" scheme="https://www.sakuratears.top/tags/Java/"/>
+    
+  </entry>
   
   <entry>
     <title>（转）为什么 String hashCode 方法选择数字31作为乘子</title>
@@ -500,32 +526,6 @@
     
     
       <category term="MarkDown" scheme="https://www.sakuratears.top/tags/MarkDown/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Html5+JQuery页面标签的禁用问题</title>
-    <link href="https://www.sakuratears.top/blog/Html5-JQuery%E9%A1%B5%E9%9D%A2%E6%A0%87%E7%AD%BE%E7%9A%84%E7%A6%81%E7%94%A8%E9%97%AE%E9%A2%9820180604/"/>
-    <id>https://www.sakuratears.top/blog/Html5-JQuery页面标签的禁用问题20180604/</id>
-    <published>2018-06-04T15:17:00.000Z</published>
-    <updated>2018-06-12T14:48:55.221Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在做移动应用项目时遇到的问题，完成某些操作后返回到前面页面要保证前面页面的标签内容不可被编辑，修改。有如下方法：</p><h2 id="方法"><a href="#方法" class="headerlink" title="方法"></a>方法</h2><ol><li><p>对于input，select框，设置disabled=’disabled’。</p><p> 如：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">'#testid1 input'</span>).attr(<span class="string">'disabled'</span>,<span class="string">'disabled'</span>);</span><br><span class="line">$(<span class="string">'#testid2 select'</span>).attr(<span class="string">'disabled'</span>,<span class="string">'disabled'</span>);</span><br></pre></td></tr></table></figure></li><li><p>对于一些点击触发事件的button，可以用unbind()移除事件方法。</p><p> 如：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">".testclass3"</span>).unbind();</span><br></pre></td></tr></table></figure><p> 注：在某些情况下unbind慎用，如页面初始化时调用click事件加载其他事件属性，unbind()可能会导致初始化时无法加载。</p></li><li><p>插件禁用，有些页面可能使用某些插件，对于插件的禁用，可以设置插件的事件方法return false;</p><p> 如：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">"#test #test4"</span>).on(<span class="string">"touchmove"</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"><span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure><p> 这个是我们项目一个滑动插件触摸禁用的例子。</p></li><li><p>对于一些比较特殊的，如li标签，可以使用class样式进行处理。</p><p> 这是一个两个li标签切换禁用的例子。</p><p> 例：</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="string">"#test_li"</span>).addClass(<span class="string">'disabledTab'</span>);</span><br><span class="line">.disabledTab&#123;</span><br><span class="line">   pointer-events: none;<span class="comment">//这样鼠标或触摸就无法选中li标签</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;前言&quot;&gt;&lt;a href=&quot;#前言&quot; class=&quot;headerlink&quot; title=&quot;前言&quot;&gt;&lt;/a&gt;前言&lt;/h2&gt;&lt;p&gt;在做移动应用项目时遇到的问题，完成某些操作后返回到前面页面要保证前面页面的标签内容不可被编辑，修改。有如下方法：&lt;/p&gt;
-&lt;h2 id=&quot;方
-      
-    
-    </summary>
-    
-      <category term="学习" scheme="https://www.sakuratears.top/categories/%E5%AD%A6%E4%B9%A0/"/>
-    
-    
-      <category term="JavaScript" scheme="https://www.sakuratears.top/tags/JavaScript/"/>
     
   </entry>
   
