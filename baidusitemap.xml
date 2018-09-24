@@ -4,6 +4,26 @@
 
     
   <url>
+    <loc>https://www.sakuratears.top/blog/%E5%9F%BA%E4%BA%8E%E6%B3%A8%E8%A7%A3%E7%9A%84%E9%80%9A%E7%94%A8%E6%95%B0%E6%8D%AE%E9%AA%8C%E8%AF%8120180924/</loc>
+    <lastmod>2018-09-24T04:52:11.857Z</lastmod>
+    <data>
+        <display>
+        <title>基于注解的通用数据验证</title>
+        <pubTime>2018-09-24T04:31:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习" url="https://www.sakuratears.top/categories/%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://www.sakuratears.top/blog/JDK%E9%87%8C%E9%82%A3%E4%BA%9B%E6%9C%89%E8%B6%A3%E7%9A%84%E4%BB%A3%E7%A0%81%EF%BC%881%EF%BC%8920180916/</loc>
     <lastmod>2018-09-16T16:19:25.576Z</lastmod>
     <data>
@@ -468,9 +488,9 @@
         <title>Java排序算法</title>
         <pubTime>2018-06-02T15:25:00.000Z</pubTime>
         
-        <tag>Java</tag>
-         
         <tag>JavaScript</tag>
+         
+        <tag>Java</tag>
          
          
            
