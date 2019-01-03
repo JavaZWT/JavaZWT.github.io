@@ -4,6 +4,30 @@
 
     
   <url>
+    <loc>https://www.sakuratears.top/blog/Zookeeper%E5%BA%94%E7%94%A8%E4%B9%8B%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%8320190103/</loc>
+    <lastmod>2019-01-03T14:04:51.400Z</lastmod>
+    <data>
+        <display>
+        <title>Zookeeper应用之注册中心</title>
+        <pubTime>2019-01-03T13:38:00.000Z</pubTime>
+        
+        <tag>Java</tag>
+         
+        <tag>Zookeeper</tag>
+         
+        <tag>注册中心</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习" url="https://www.sakuratears.top/categories/%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://www.sakuratears.top/blog/HTTP%E5%8D%8F%E8%AE%AE20181229/</loc>
     <lastmod>2018-12-30T04:05:55.639Z</lastmod>
     <data>
@@ -188,9 +212,9 @@
         <title>Java排序算法</title>
         <pubTime>2018-06-02T15:25:00.000Z</pubTime>
         
-        <tag>JavaScript</tag>
-         
         <tag>Java</tag>
+         
+        <tag>JavaScript</tag>
          
          
            
