@@ -1,0 +1,10 @@
+User-agent: * Allow: /
+Allow: /archives/
+Allow: /blog/
+Allow: /photos/
+Allow: /support/
+Allow: /tags/
+Allow: /categories/
+
+Sitemap: http://www.sakuratears.top/sitemap.xml
+Sitemap: http://www.sakuratears.top/baidusitemap.xml
