@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.sakuratears.top/photos/photos.json</loc>
+    
+    <lastmod>2019-02-01T13:06:39.197Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.sakuratears.top/blog/%E4%BD%BF%E7%94%A8Java%E5%8F%91%E9%80%81%E9%82%AE%E4%BB%B620190126/</loc>
     
     <lastmod>2019-01-26T05:07:23.276Z</lastmod>
@@ -82,13 +89,6 @@
     <loc>https://www.sakuratears.top/photos/index.html</loc>
     
     <lastmod>2018-12-23T04:55:46.634Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.sakuratears.top/photos/photos.json</loc>
-    
-    <lastmod>2018-12-23T04:32:50.261Z</lastmod>
     
   </url>
   
