@@ -4,16 +4,38 @@
 
     
   <url>
+    <loc>https://www.sakuratears.top/blog/PDF-js%E6%8F%92%E4%BB%B6.html</loc>
+    <lastmod>2019-03-14T13:18:18.734Z</lastmod>
+    <data>
+        <display>
+        <title>PDF.js插件</title>
+        <pubTime>2019-03-14T13:01:00.000Z</pubTime>
+        
+        <tag>JavaScript</tag>
+         
+        <tag>PDF.js</tag>
+         
+         
+           
+             
+              <breadCrumb title="学习" url="https://www.sakuratears.top/categories/%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>https://www.sakuratears.top/blog/%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84Hexo%E5%8D%9A%E5%AE%A2%EF%BC%883%EF%BC%89.html</loc>
-    <lastmod>2019-03-12T10:29:27.151Z</lastmod>
+    <lastmod>2019-03-14T13:13:19.003Z</lastmod>
     <data>
         <display>
         <title>搭建自己的Hexo博客（3）</title>
         <pubTime>2019-03-12T06:40:00.000Z</pubTime>
         
-        <tag>Hexo</tag>
+        <tag>blog</tag>
          
-        <tag>博客</tag>
+        <tag>Hexo</tag>
          
          
            
@@ -196,9 +218,9 @@
         
         <tag>Java</tag>
          
-        <tag>Zookeeper</tag>
-         
         <tag>注册中心</tag>
+         
+        <tag>Zookeeper</tag>
          
          
            
