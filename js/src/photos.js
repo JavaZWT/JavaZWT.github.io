@@ -1,1 +1,47 @@
-photo={page:1,offset:20,init:function(){var t=this;$.getJSON("/photos/photos.json",function(i){t.render(t.page,i)})},render:function(i,t){var a=(i-1)*this.offset,n=i*this.offset;if(!(a>=t.length)){for(var o,s,e,r,d="",g=a;g<n&&g<t.length;g++)s=(o=t[g].split(" ")[1]).split(".")[0],r=(e=t[g].split(" ")[0]).split(".")[0],d+='<div class="card" style="width:330px"><div class="ImageInCard" style="height:'+330*e.split(".")[1]/r+'px"><a data-fancybox="gallery" href="http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/photos/'+o+'?raw=true" data-caption="'+s+'"><img src="http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/photos/'+o+'?raw=true"/></a></div></div>';$(".ImageGrid").append(d),$(".ImageGrid").lazyload(),this.minigrid()}},minigrid:function(){var i=new Minigrid({container:".ImageGrid",item:".card",gutter:12});i.mount(),$(window).resize(function(){i.mount()})}},photo.init();
+photo = {
+    page: 1,
+    offset: 20,
+    init: function() {
+        var that = this;
+        $.getJSON("/photos/photos.json", function(data) {
+            that.render(that.page, data);
+            //that.scroll(data);
+        });
+    },
+    render: function(page, data) {
+        var begin = (page - 1) * this.offset;
+        var end = page * this.offset;
+        if (begin >= data.length) return;
+        var html, imgNameWithPattern, imgName, imageSize, imageX, imageY, li = "";
+        for (var i = begin; i < end && i < data.length; i++) {
+            imgNameWithPattern = data[i].split(' ')[1];
+            imgName = imgNameWithPattern.split('.')[0]
+            imageSize = data[i].split(' ')[0];
+            imageX = imageSize.split('.')[0];
+            imageY = imageSize.split('.')[1];
+            li += '<div class="card" style="width:330px">' +
+                '<div class="ImageInCard" style="height:' + 330 * imageY / imageX + 'px">' +
+                '<a data-fancybox="gallery" href="http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/photos/' + imgNameWithPattern + '?raw=true" data-caption="' + imgName + '">' +
+                '<img src="http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/photos/' + imgNameWithPattern + '?raw=true"/>' +
+                '</a>' +
+                '</div>' +
+                // '<div class="TextInCard">' + imgName + '</div>' +
+                '</div>'
+        }
+        $(".ImageGrid").append(li);
+        $(".ImageGrid").lazyload();
+        this.minigrid();
+    },
+    minigrid: function() {
+        var grid = new Minigrid({
+            container: '.ImageGrid',
+            item: '.card',
+            gutter: 12
+        });
+        grid.mount();
+        $(window).resize(function() {
+            grid.mount();
+        });
+    }
+}
+photo.init();
