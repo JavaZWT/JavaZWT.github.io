@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.sakuratears.top/photos/index.html</loc>
+    
+    <lastmod>2019-07-21T06:17:07.155Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.sakuratears.top/blog/Redis%E5%8A%9F%E8%83%BD%E6%96%87%E6%A1%A3%EF%BC%88%E8%BD%AC%EF%BC%89.html</loc>
+    
+    <lastmod>2019-07-21T02:34:35.371Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.sakuratears.top/blog/%E8%B7%A8%E5%9F%9F%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html</loc>
     
     <lastmod>2019-07-17T14:35:30.616Z</lastmod>
@@ -201,13 +215,6 @@
     <loc>https://www.sakuratears.top/blog/Zookeeper%E5%BA%94%E7%94%A8%E4%B9%8B%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83.html</loc>
     
     <lastmod>2018-12-25T14:50:33.685Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.sakuratears.top/photos/index.html</loc>
-    
-    <lastmod>2018-12-23T04:55:46.634Z</lastmod>
     
   </url>
   
