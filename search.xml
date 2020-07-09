@@ -388,7 +388,7 @@
         <category>学习</category>
       </categories>
       <tags>
-        <tag>博客</tag>
+        <tag>blog</tag>
       </tags>
   </entry>
   <entry>
@@ -675,8 +675,8 @@
       </categories>
       <tags>
         <tag>Java</tag>
-        <tag>注册中心</tag>
         <tag>Zookeeper</tag>
+        <tag>注册中心</tag>
       </tags>
   </entry>
   <entry>
