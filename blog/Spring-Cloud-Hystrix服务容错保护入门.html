@@ -1,0 +1,355 @@
+<!DOCTYPE html><html class="theme-next pisces use-motion" lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><script src="/lib/pace/pace.min.js?v=1.0.2"></script><link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4"><link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222"><meta name="keywords" content="SpringCloud,Hystrix,"><link rel="alternate" href="/atom.xml" title="SakuraTears的博客" type="application/atom+xml"><meta name="description" content="前言在微服务中，系统由许多服务单元构成，各单元的应用间通过服务注册与订阅的方式互相依赖。由于每个单元都在不同的进程中进行，依赖通过远程调用的方式执行，这样就有可能因为网络原因或者依赖服务自身问题出现调用故障或延迟，这些问题会直接导致调用方的对外服务也出现延迟，若此时调用方的请求不断增加，最后就会因等待出现故障的依赖方响应而形成任务积压，最终导致自身服务瘫痪。 由于微服务中存在众多服务单元，若一个单"><meta name="keywords" content="SpringCloud,Hystrix"><meta property="og:type" content="article"><meta property="og:title" content="Spring Cloud Hystrix服务容错保护入门"><meta property="og:url" content="https://www.sakuratears.top/blog/Spring-Cloud-Hystrix服务容错保护入门.html"><meta property="og:site_name" content="SakuraTears的博客"><meta property="og:description" content="前言在微服务中，系统由许多服务单元构成，各单元的应用间通过服务注册与订阅的方式互相依赖。由于每个单元都在不同的进程中进行，依赖通过远程调用的方式执行，这样就有可能因为网络原因或者依赖服务自身问题出现调用故障或延迟，这些问题会直接导致调用方的对外服务也出现延迟，若此时调用方的请求不断增加，最后就会因等待出现故障的依赖方响应而形成任务积压，最终导致自身服务瘫痪。 由于微服务中存在众多服务单元，若一个单"><meta property="og:locale" content="zh-Hans"><meta property="og:image" content="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/article/pasted-662.jpg"><meta property="og:image" content="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/article/pasted-663.jpg"><meta property="og:image" content="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/article/pasted-664.jpg"><meta property="og:image" content="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/article/pasted-665.jpg"><meta property="og:image" content="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/article/pasted-666.jpg"><meta property="og:updated_time" content="2020-11-21T09:25:02.213Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Spring Cloud Hystrix服务容错保护入门"><meta name="twitter:description" content="前言在微服务中，系统由许多服务单元构成，各单元的应用间通过服务注册与订阅的方式互相依赖。由于每个单元都在不同的进程中进行，依赖通过远程调用的方式执行，这样就有可能因为网络原因或者依赖服务自身问题出现调用故障或延迟，这些问题会直接导致调用方的对外服务也出现延迟，若此时调用方的请求不断增加，最后就会因等待出现故障的依赖方响应而形成任务积压，最终导致自身服务瘫痪。 由于微服务中存在众多服务单元，若一个单"><meta name="twitter:image" content="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/article/pasted-662.jpg"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Pisces",version:"5.1.4",sidebar:{position:"left",display:"post",offset:12,b2t:!1,scrollpercent:!0,onmobile:!1},fancybox:!0,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},duoshuo:{userId:"0",author:"博主"},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><link rel="canonical" href="https://www.sakuratears.top/blog/Spring-Cloud-Hystrix服务容错保护入门.html"><title>Spring Cloud Hystrix服务容错保护入门 | SakuraTears的博客</title><link rel="stylesheet" href="/assets/css/APlayer.min.css" class="aplayer-style-marker"><script src="/assets/js/APlayer.min.js" class="aplayer-script-marker"></script></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div> <a href="https://github.com/javazwt" rel="external nofollow noopener noreferrer" target="_blank"><img style="position:absolute;top:0;left:0;border:0" src="https://s3.amazonaws.com/github/ribbons/forkme_left_gray_6d6d6d.png" alt="Fork me on GitHub"></a><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">SakuraTears的博客</span><span class="logo-line-after"><i></i></span></a></div><h1 class="site-subtitle" itemprop="description">越努力越幸运</h1></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br> 首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br> 关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br> 标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br> 分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br> 归档</a></li><li class="menu-item menu-item-support"><a href="/support/" rel="section"><i class="menu-item-icon fa fa-fw fa-support"></i><br> 开源支持</a></li><li class="menu-item menu-item-photos"><a href="/photos/" rel="section"><i class="menu-item-icon fa fa-fw fa-photo"></i><br> 相册</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br> 搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="https://www.sakuratears.top/blog/Spring-Cloud-Hystrix服务容错保护入门.html"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="SakuraTears"><meta itemprop="description" content=""><meta itemprop="image" content="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/others/avatar.jpg"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="SakuraTears的博客"></span><header class="post-header"><h2 class="post-title" itemprop="name headline">Spring Cloud Hystrix服务容错保护入门</h2><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-21T17:13:00+08:00">2020-11-21</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/学习/" itemprop="url" rel="index"><span itemprop="name">学习</span></a></span></span> <span class="post-comments-count"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-comment-o"></i></span><a href="/blog/Spring-Cloud-Hystrix服务容错保护入门.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/blog/Spring-Cloud-Hystrix服务容错保护入门.html" itemprop="commentCount"></span></a></span> <span id="/blog/Spring-Cloud-Hystrix服务容错保护入门.html" class="leancloud_visitors" data-flag-title="Spring Cloud Hystrix服务容错保护入门"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-eye"></i></span> <span class="post-meta-item-text">阅读次数&#58;</span><span class="leancloud-visitors-count"></span></span><div class="post-wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span> <span class="post-meta-item-text">字数统计&#58;</span> <span title="字数统计">3,119</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-clock-o"></i></span> <span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">12</span></div></div></header><div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在微服务中，系统由许多服务单元构成，各单元的应用间通过服务注册与订阅的方式互相依赖。由于每个单元都在不同的进程中进行，依赖通过远程调用的方式执行，这样就有可能因为网络原因或者依赖服务自身问题出现调用故障或延迟，这些问题会直接导致调用方的对外服务也出现延迟，若此时调用方的请求不断增加，最后就会因等待出现故障的依赖方响应而形成任务积压，最终导致自身服务瘫痪。</p><p>由于微服务中存在众多服务单元，若一个单元出现故障，就很容易因依赖关系而引发故障的蔓延，最终导致整个系统瘫痪。未解决这样的问题，产生了断路器等一系列服务保护机制，而 Spring Cloud Hystrix 就是其中之一。</p><p>Spring Cloud Hystrix 基于 Netflix 开源框架 Hystrix 实现，具备 服务降级、服务熔断、线程和信号隔离、请求缓存、请求合并以及服务监控等强大功能。</p><p>接下来，我们从一个示例来了解它的使用及原理。</p><h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><p>由于内容较多，这篇文章我们先来了解下 Hystrix 的一个简单例子，然后再来了解两种模式：命令模式 和 观察者-订阅者模式。</p><h2 id="Hystrix示例"><a href="#Hystrix示例" class="headerlink" title="Hystrix示例"></a>Hystrix示例</h2><p>在Eureka和Ribbon的例子里，我们创建了 eureka-server、sakura-service、sakura-consumer服务，简单实现了微服务的调用。</p><p>PS：详见此文章<a href="https://www.sakuratears.top/blog/Eureka%E7%AE%80%E4%BB%8B%E5%8F%8A%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8.html">Eureka简介及简单使用</a></p><p>我们启动3个 eureka-server（高可用服务注册中心）端口号为8001、8002、8003，启动2个sakura-service 模拟服务提供方，端口号为9001、9002，启动1个sakura-service 模拟服务提供方，端口号7001。</p><p>正常情况下，我们访问 <a href="http://host:port/consumer" rel="external nofollow noopener noreferrer" target="_blank">http://host:port/consumer</a> 会提示HelloWorld信息，如下图。</p><p><img src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/article/pasted-662.jpg" alt="upload successful"></p><p>现在我们模拟服务提供方部分服务故障，停掉 sakura-service 的一个节点 9002 ，再次访问 <a href="http://host:port/consumer" rel="external nofollow noopener noreferrer" target="_blank">http://host:port/consumer</a> ，有时候正常，有时候会出现如下错误。</p><p><img src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/article/pasted-663.jpg" alt="upload successful"></p><p>同时反应缓慢，因为需要等到我们这边服务调用超时，这种错误信息当调用方请求不断增加后，易出现任务积压，从而导致调用方对外服务也变得不可用。</p><p>下面我们引入 Spring Cloud Hystrix。</p><ul><li><p>在 sakura-consumer 工程的 <code>pom.xml</code>的 <code>dependency</code> 节点中引入 <code>spring-cloud-starter-netflix-hystrix</code>依赖。</p><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-hystrix<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure></li><li><p>在 sakura-consumer 工程的主类<code>SakuraConsumerApplication</code>中使用<code>@EnableCircuitBreaker</code>开启断路器功能。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableDiscoveryClient</span></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableCircuitBreaker</span></span><br><span class="line"><span class="meta">@RibbonClient</span>(name = <span class="string">"sakura"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SakuraConsumerApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(SakuraConsumerApplication.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="meta">@LoadBalanced</span></span><br><span class="line">    <span class="function">RestTemplate <span class="title">restTemplate</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RestTemplate();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li><li><p>改造服务消费方式，我们新增<code>SakuraService</code>类，注入<code>RestTemplate</code>。然后在<code>SakuraController</code>中注入<code>SakuraService</code>，并对其方法<code>hello</code>进行调用，同时，在<code>hello</code>方法上增加<code>@HystrixCommand</code>注解来指定回调方法。如下：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SakuraService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RestTemplate restTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@HystrixCommand</span>(fallbackMethod = <span class="string">"helloFallback"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> restTemplate.getForEntity(<span class="string">"http://SAKURA-SERVICE/hello"</span>,String.class).getBody();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">helloFallback</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"error"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SakuraController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> SakuraService sakuraService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"/consumer"</span>,method = RequestMethod.GET)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">hello</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> sakuraService.hello();</span><br><span class="line">    &#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li></ul><p>这时候我们启动 sakura-consumer，同时停掉 sakura-service 的一个节点 9002 ，再次访问 <a href="http://host:port/consumer" rel="external nofollow noopener noreferrer" target="_blank">http://host:port/consumer</a> ，我们多次访问，可以看到有时候正常，有时候提示如下：</p><p>正常显示：</p><p><img src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/article/pasted-664.jpg" alt="upload successful"></p><p>访问到服务异常的实例后提示：</p><p><img src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/article/pasted-665.jpg" alt="upload successful"></p><p>上面的信息说明了当consumer访问到异常的实例后，不再返回之前的错误内容，而输出内容为error，也就是我们指定的 Hystrix 服务回调，即<code>helloFallback</code>里的内容。</p><p>这种是属于服务异常的情况，我们也可以模拟服务请求阻塞（长时间无响应）的情况，我们来看一下：</p><p>我们对sakura-service进行部分修改，如下：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SakuraController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 服务注册</span></span><br><span class="line">    <span class="meta">@Qualifier</span>(<span class="string">"eurekaRegistration"</span>)</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> Registration registration;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"/hello"</span>,method = RequestMethod.GET)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">index</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="keyword">int</span> time = <span class="keyword">new</span> Random().nextInt(<span class="number">3000</span>);</span><br><span class="line">        System.out.println(<span class="string">"sleepTime:"</span>+time);</span><br><span class="line">        Thread.sleep(time);</span><br><span class="line">        System.out.println(<span class="string">"Host:"</span>+registration.getHost()</span><br><span class="line">                +<span class="string">";ServiceID:"</span>+registration.getServiceId()</span><br><span class="line">                +<span class="string">";port:"</span>+registration.getPort()</span><br><span class="line">        );</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello World"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>使其收到请求后随机0~3000ms在进行处理，而后重新启动 sakura-service （9001、9002）。</p><p>我们通过全局配置，在<code>application.properties</code>文件里设置 Hystrix 超时时间为 2000ms。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds=2000</span><br></pre></td></tr></table></figure><p>然后我们调用 <a href="http://host:port/consumer" rel="external nofollow noopener noreferrer" target="_blank">http://host:port/consumer</a> ，可以看到当响应时间在 2000ms 内时，输出 Hello World，否则输出 error。</p><p><img src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/article/pasted-666.jpg" alt="upload successful"></p><p>上面就是服务消费者因调用的服务超时从而触发熔断请求，并调用回调逻辑返回结果。</p><p>在了解 Hystrix 原理及详情之前，我们需要先对一下部分内容有所熟悉。</p><h2 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h2><p>命令模式，它可以将来自客户端的请求封装成一个对象，从而让我们可以使用不同的请求对客户端进行参数化。它可以被用于实现“行为请求者”与“行为实现者”的解耦，以便使两者可以适应变化。</p><p>我们通过代码来看下命令模式：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//命令接收者</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Receiver</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">action</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//真正的业务逻辑</span></span><br><span class="line">        System.out.println(<span class="string">"12345678"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//命令接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Command</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">execute</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//具体命令实现</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConcreteCommand</span> <span class="keyword">implements</span> <span class="title">Command</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Receiver receiver;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ConcreteCommand</span><span class="params">(Receiver receiver)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.receiver = receiver;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.receiver.action();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//客户端调用者</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Invoker</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Command command;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCommand</span><span class="params">(Command command)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.command = command;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">action</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.command.execute();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//测试</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Client</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Receiver receiver = <span class="keyword">new</span> Receiver();</span><br><span class="line">        Command command = <span class="keyword">new</span> ConcreteCommand(receiver);</span><br><span class="line">        Invoker invoker = <span class="keyword">new</span> Invoker();</span><br><span class="line">        invoker.setCommand(command);</span><br><span class="line">        invoker.action();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>上述代码对象示意如下：</p><ul><li>Receiver：接收者，它知道如何处理具体的业务逻辑。</li><li>Command：抽象命令，它定义了一个命令对象应具备的一系列命令操作，如<code>execute</code>，<code>undo</code>，<code>redo</code>等。当命令操作被调用的时候就会触发接收者去做具体命令对应的业务逻辑。</li><li>ConcreteCommand：具体的命令实现，在这里它绑定了命令操作与接收者之间的关系，<code>execute</code>命令的实现委托给了<code>Receiver</code>的<code>action</code>函数。</li><li>Invoker：调用者，它持有一个命令对象，并且可以在需要的时候通过命令对象完成具体的业务逻辑。</li></ul><p>从上面的例子我们可以看到，调用者<code>Invoker</code>与操作者<code>Receiver</code>通过<code>Command</code>命令接口实现了解耦。</p><p>对于调用者来说，我们可以为其注入多个命令操作，比如新建文件、复制文件、删除文件等操作，调用者只需在需要的时候调用即可，而不需要知道这些操作命令实际是如何实现的。</p><p>上面的示例中，我们可以发现，<code>Invoker</code>与<code>Receiver</code>的关系非常类似于“请求-响应”模式，所以它比较适用于实现记录日志、撤销操作、队列请求等。</p><p>下面这些情况下应考虑使用命令模式。</p><ul><li>使用命令模式作为“回调（Callback）”在面向对象系统中的替代。“Callback”讲的便是先将一个函数登记上，然后在以后在调用此函数。</li><li>需要在不同的时间指定请求、将请求排队。一个命令对象和原先的请求发出者可以有不同的生命期。换言之，原先的请求发出者可能已经不在了，而命令对象本身仍然是活动的。这时命令的接收者可以是在本地，也可以在网络的另一个地址。命令对象可以在序列化之后传送到另一台机器上去。</li><li>系统需要支持命令的撤销。命令对象可以把状态存储起来，等到客户端需要撤销命令所产生的效果时，可以调用<code>undo()</code>方法，把命令所产生的效果撤销掉。命令对象还可以提高<code>redo()</code>方法，以供客户端在需要时再重新实施命令效果。</li><li>如果要将系统中所有的数据更新到日志里，以便在系统崩溃是，可以根据日志读回所有的数据更新命令，重新调用<code>execute()</code>方法一条一条执行这些命令，从而恢复系统在崩溃前所做的数据更新。</li></ul><p>在 Hystrix 中，共有两种命令对象，如下：</p><ul><li>HystrixCommand ： 用在依赖的服务返回单个操作结果的时候。</li><li>HystrixObservableCommand ： 用在依赖的服务返回多个操作结果的时候。</li></ul><p>上面两个命令对象分别有两种命令执行方式，如下：</p><p>HystrixCommand：</p><ul><li>execute()：同步执行，从依赖的服务返回一个单一的结果对象，或是在发生错误的时候抛出异常。</li><li>queue()：异步执行，直接返回一个 <code>Future</code> 对象，其中包含了服务执行结束时要返回的单一结果对象。</li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">R value = command.execute();</span><br><span class="line">Future&lt;R&gt; fValue = command.queue();</span><br></pre></td></tr></table></figure><p>HystrixObservableCommand:</p><ul><li>observe()：返回<code>Observable</code>对象，它代表了操作的多个结果，它是一个<strong>Hot Observable</strong>。</li><li>toObservable()：同样会返回<code>Observable</code>对象，也代表了操作的多个结果，但它返回的是一个<strong>Cold Observable</strong>。</li></ul><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Observable&lt;R&gt; ohValue = command.observe();</span><br><span class="line">Observable&lt;R&gt; ocValue = command.toObservable();</span><br></pre></td></tr></table></figure><p>在Hystrix底层大量使用了<strong>RxJava</strong>，我们在介绍Hystrix原理时，先对<strong>RxJava</strong>的 观察者-订阅者 模式来做一个简单了解。</p><h2 id="RxJava-观察者-订阅者模式"><a href="#RxJava-观察者-订阅者模式" class="headerlink" title="RxJava 观察者-订阅者模式"></a>RxJava 观察者-订阅者模式</h2><p>上面我们所提到的<code>Observable</code>对象就是<strong>RxJava</strong>的核心内容之一，可以把它理解为“事件源”或是“被观察者”，与其对应的<code>Subscriber</code>对象，可以理解为“订阅者”或是“观察者”。这两个对象是<strong>RxJava</strong>响应式编程的重要组成部分。</p><ul><li><code>Observable</code>用来向订阅者<code>Subscriber</code>对象发布事件，<code>Subscriber</code>对象则在接收到事件后对其进行处理，而在这里所指的的事件通常就是对依赖服务的调用。</li><li>一个<code>Observable</code>可以发出多个事件，直到结束或者发生异常。</li><li><code>Observable</code>对象每发出一个事件，就会调用对应观察者<code>Subscriber</code>对象的<code>onNext()</code>方法。</li><li>每一个<code>Observable</code>的执行，最后一定会通过调用<code>Subscriber.onCompleted()</code>或者<code>Subscriber.onError()</code>来结束该事件的操作流。</li></ul><p>我们通过一个例子来看一下。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ObservableTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//创建事件源observable</span></span><br><span class="line">        Observable&lt;String&gt; observable = Observable.unsafeCreate(<span class="keyword">new</span> Observable.OnSubscribe&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">call</span><span class="params">(Subscriber&lt;? <span class="keyword">super</span> String&gt; subscriber)</span> </span>&#123;</span><br><span class="line">                subscriber.onNext(<span class="string">"Hello World"</span>);</span><br><span class="line">                subscriber.onNext(<span class="string">"I am sakuratears"</span>);</span><br><span class="line">                subscriber.onCompleted();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        Subscriber&lt;String&gt; subscriber = <span class="keyword">new</span> Subscriber&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCompleted</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">"completed"</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Throwable throwable)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onNext</span><span class="params">(String s)</span> </span>&#123;</span><br><span class="line">                System.out.println(<span class="string">"Subscriber:"</span>+s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//订阅</span></span><br><span class="line">        observable.subscribe(subscriber);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>在该示例中，我们创建了一个简单的事件源<code>observable</code>，一个对事件传递内容输出的订阅者<code>subscriber</code>，通过<code>observable.subscribe(subscriber)</code>来触发事件的发布。</p><p>对于事件源<code>observable</code>，有两个不同的概念： <strong>Hot Observable</strong> 和 <strong>Cold Observable</strong>。其中<strong>Hot Observable</strong>，它不论“事件源”是否有“订阅者”，都会在创建后对事件进行发布，所以对于<strong>Hot Observable</strong>的每一个“订阅者”都有可能是从“事件源”的中途开始的，并可能只是看到了整个操作过程的局部过程。而<strong>Cold Observable</strong>在没有“订阅者”的时候并不会发布事件，而是进行等待，直到有“订阅者”之后才进行发布事件，所以对于<strong>Cold Observable</strong>的订阅者，它可以保证从一开始看到整个操作的全部过程。</p><p>以上就是在熟悉 Hystrix 源码时，我们应该有所了解的部分内容。</p><p>我们将在下篇文章详细分析 Hystrix 的一些内容。</p><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本篇文章我们通过一个 Hystrix 的示例，对 Hystrix 有了简单的认识，同时简单介绍了两种模式，在 Hystrix 中，便使用了这两种模式，我们将在下篇文章详细分析，并进一步了解 Hystrix 的一些特点。</p></div><div><div style="text-align:center;color:#ccc;font-size:15px"><br><br><br> -------------文章结束啦 ~\(≧▽≦)/~ 感谢您的阅读-------------</div><br></div><div><div id="wechat_subscriber" style="display:block;padding:10px 0;margin:20px auto;width:100%;text-align:center"> <img id="wechat_subscriber_qcode" src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/others/qrcode_wechat_subscriber.jpg" alt="SakuraTears wechat" style="width:200px;max-width:100%"><div>扫一扫关注我的公众号</div></div></div><div><div style="padding:10px 0;margin:20px auto;width:90%;text-align:center"><div>您的支持就是我创作的动力！</div> <button id="rewardButton" disable="enable" onclick='var qr=document.getElementById("QR");"none"===qr.style.display?qr.style.display="block":qr.style.display="none"'> <span>打赏</span></button><div id="QR" style="display:none"><div id="wechat" style="display:inline-block"> <img id="wechat_qr" src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/others/wechatpay.png" alt="SakuraTears 微信支付"><p>微信支付</p></div><div id="alipay" style="display:inline-block"> <img id="alipay_qr" src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/others/alipay.jpg" alt="SakuraTears 支付宝"><p>支付宝</p></div></div></div></div><div><ul class="post-copyright"><li class="post-copyright-author"> <strong>本文作者：</strong> SakuraTears</li><li class="post-copyright-link"> <strong>本文链接：</strong> <a href="https://www.sakuratears.top/blog/Spring-Cloud-Hystrix服务容错保护入门.html" title="Spring Cloud Hystrix服务容错保护入门">https://www.sakuratears.top/blog/Spring-Cloud-Hystrix服务容错保护入门.html</a></li><li class="post-copyright-license"> <strong>版权声明：</strong> 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow noopener noreferrer" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！</li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/tags/SpringCloud/" rel="tag"><i class="fa fa-tag"></i> SpringCloud</a><a href="/tags/Hystrix/" rel="tag"><i class="fa fa-tag"></i> Hystrix</a></div><div class="post-widgets"><div class="wp_rating"><div style="color:rgba(0,0,0,.75);font-size:16px;letter-spacing:8px">(&gt;来评分吧&lt;)</div><div id="wpac-rating"></div></div></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/blog/SpringCloud-Ribbon-配置详解.html" rel="next" title="SpringCloud Ribbon 配置详解"><i class="fa fa-chevron-left"></i> SpringCloud Ribbon 配置详解</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/blog/CAS详解.html" rel="prev" title="CAS详解">CAS详解<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div><div class="comments" id="comments"></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/others/avatar.jpg" alt="SakuraTears"><p class="site-author-name" itemprop="name">SakuraTears</p><p class="site-description motion-element" itemprop="description"></p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">140</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">3</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">104</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="feed-link motion-element"><a href="/atom.xml" rel="alternate"><i class="fa fa-rss"></i> RSS</a></div><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/JavaZWT" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer"><i class="fa fa-fw fa-github"></i> GitHub</a></span><span class="links-of-author-item"><a href="mailto:971258230@qq.com" target="_blank" title="Email" rel="external nofollow noopener noreferrer"><i class="fa fa-fw fa-envelope"></i> Email</a></span><span class="links-of-author-item"><a href="http://wpa.qq.com/msgrd?v=3&uin=971258230&site=qq&menu=yes" target="_blank" title="QQ" rel="external nofollow noopener noreferrer"><i class="fa fa-fw fa-qq"></i> QQ</a></span><span class="links-of-author-item"><a href="https://blog.csdn.net/JavaZWT" target="_blank" title="CSDN" rel="external nofollow noopener noreferrer"><i class="fa fa-fw fa-copyright"></i> CSDN</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-block"><div class="links-of-blogroll-title" style="color:#fc6423"><i class="fa fa-fw fa-link"></i> 友情链接</div><ul class="links-of-blogroll-list"><li class="links-of-blogroll-item"> <a href="https://www.sakuratears.top" title="SakuraTears的小乖乖" target="_blank">SakuraTears的小乖乖</a></li><li class="links-of-blogroll-item"> <a href="http://jm.taobao.org/" title="阿里巴巴中间件团队博客" target="_blank" rel="external nofollow noopener noreferrer">阿里巴巴中间件团队博客</a></li><li class="links-of-blogroll-item"> <a href="https://blog.ymfe.org/" title="去哪儿网大前端技术博客" target="_blank" rel="external nofollow noopener noreferrer">去哪儿网大前端技术博客</a></li></ul></div><div class="links-of-blogroll motion-element links-of-blogroll-inline" style="opacity:1;display:block;transform:translateX(0);margin-top:8px"></div><div id="aplayer-rWUYQYrx" class="aplayer aplayer-tag-marker" style="margin:30px 0 30px 0"></div><script>var options={narrow:!1,autoplay:!1,showlrc:0,mutex:!0,theme:"#e6d0b2",preload:"none",listmaxheight:"500px",music:[{title:"Sakura Tears",author:"Nigel Silin",url:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/Nigel%20Silin%20-%20Sakura%20Tears.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music1.jpeg"},{title:"东京不太热",author:"封茗囧菌",url:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/%E5%B0%81%E8%8C%97%E5%9B%A7%E8%8F%8C%20-%20%E4%B8%9C%E4%BA%AC%E4%B8%8D%E5%A4%AA%E7%83%AD.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music2.jpeg"},{title:"春风吹",author:"锦零",url:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/%E9%94%A6%E9%9B%B6%20-%20%E6%98%A5%E9%A3%8E%E5%90%B9%EF%BC%88Cover%20%E6%96%B9%E5%A4%A7%E5%90%8C%EF%BC%89.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music3.jpeg"},{title:"Secret",author:"茶太",url:"https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/%E8%8C%B6%E5%A4%AA%20-%20Secret.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music4.jpeg"},{title:"secret base ~君がくれたもの~",author:"茅野愛衣,戸松遥,早見沙織",url:"https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/%E8%8C%85%E9%87%8E%E6%84%9B%E8%A1%A3%2C%E6%88%B8%E6%9D%BE%E9%81%A5%2C%E6%97%A9%E8%A6%8B%E6%B2%99%E7%B9%94%20-%20secret%20base%20%7E%E5%90%9B%E3%81%8B%E3%82%99%E3%81%8F%E3%82%8C%E3%81%9F%E3%82%82%E3%81%AE%7E%20%2810%20years%20after%20Ver.%29.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music5.jpeg"},{title:"ファンファーレ",author:"sumika",url:"https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/sumika%20-%20%E3%83%95%E3%82%A1%E3%83%B3%E3%83%95%E3%82%A1%E3%83%BC%E3%83%AC.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music6.jpeg"},{title:"心做し",author:"双笙",url:"https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/%E5%8F%8C%E7%AC%99%20-%20%E5%BF%83%E5%81%9A%E3%81%97%EF%BC%88Cover%20GUMI%EF%BC%89.mp3",pic:"https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music7.jpeg"}]};options.element=document.getElementById("aplayer-rWUYQYrx");var ap=new APlayer(options);window.aplayers||(window.aplayers=[]),window.aplayers.push(ap)</script></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#正文"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hystrix示例"><span class="nav-number">2.1.</span> <span class="nav-text">Hystrix示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令模式"><span class="nav-number">2.2.</span> <span class="nav-text">命令模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RxJava-观察者-订阅者模式"><span class="nav-number">2.3.</span> <span class="nav-text">RxJava 观察者-订阅者模式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2021</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">SakuraTears</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-area-chart"></i></span> <span class="post-meta-item-text">Site words total count&#58;</span> <span title="Site words total count">570.5k</span></div> <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span><script>var now=new Date;function createtime(){var n=new Date("05/20/2018 00:00:00");now.setTime(now.getTime()+250),days=(now-n)/1e3/60/60/24,dnum=Math.floor(days),hours=(now-n)/1e3/60/60-24*dnum,hnum=Math.floor(hours),1==String(hnum).length&&(hnum="0"+hnum),minutes=(now-n)/1e3/60-1440*dnum-60*hnum,mnum=Math.floor(minutes),1==String(mnum).length&&(mnum="0"+mnum),seconds=(now-n)/1e3-86400*dnum-3600*hnum-60*mnum,snum=Math.round(seconds),1==String(snum).length&&(snum="0"+snum),document.getElementById("timeDate").innerHTML="本站已运行 "+dnum+" 天 ",document.getElementById("times").innerHTML=hnum+" 小时 "+mnum+" 分 "+snum+" 秒"}setInterval("createtime()",250)</script><div class="footer-custom">Thanks to <a target="_blank" href="https://hexo.io/" rel="external nofollow noopener noreferrer">Hexo</a> | <a target="_blank" href="https://github.com/" rel="external nofollow noopener noreferrer">GitHub</a> | <a target="_blank" href="https://nodejs.org/" rel="external nofollow noopener noreferrer">Node.js</a></div><div class="busuanzi-count"><script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> <span class="site-uv"><i class="fa fa-user">总访客数</i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span> <i class="fa">人</i></span> <span class="site-pv"><i class="fa fa-eye">总浏览量</i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span> <i class="fa">次</i></span></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span id="scrollpercent"><span>0</span>%</span></div><div id="needsharebutton-float"><span class="btn"><i class="fa fa-share-alt" aria-hidden="true"></i></span></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script><script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'n81D2zVCOBCRyTrhhwoBjui0-gzGzoHsz',
+        appKey: '2II35ez36s8c4KvXJNGVeJ5O',
+        placeholder: '(*^_^*)看了这么多，可能你有话想说',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+    //新增以下代码即可，可以移除.info下所有子节点。
+    var infoEle = document.querySelector('#comments .info');
+      if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+        infoEle.childNodes.forEach(function(item) {
+          item.parentNode.removeChild(item);
+        });
+      }
+  </script><script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script><script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script><script>AV.initialize("n81D2zVCOBCRyTrhhwoBjui0-gzGzoHsz","2II35ez36s8c4KvXJNGVeJ5O")</script><script>function showTime(e){var t=new AV.Query(e),c=[],u=$(".leancloud_visitors");u.each(function(){c.push($(this).attr("id").trim())}),t.containedIn("url",c),t.find().done(function(e){var t=".leancloud-visitors-count";if(0!==e.length){for(var n=0;n<e.length;n++){var o=e[n],i=o.get("url"),s=o.get("time"),r=document.getElementById(i);$(r).find(t).text(s)}for(n=0;n<c.length;n++){i=c[n],r=document.getElementById(i);var l=$(r).find(t);""==l.text()&&l.text(0)}}else u.find(t).text(0)}).fail(function(e,t){console.log("Error: "+t.code+" "+t.message)})}function addCount(i){var e=$(".leancloud_visitors"),s=e.attr("id").trim(),r=e.attr("data-flag-title").trim(),t=new AV.Query(i);t.equalTo("url",s),t.find({success:function(e){if(0<e.length){var t=e[0];t.fetchWhenSave(!0),t.increment("time"),t.save(null,{success:function(e){$(document.getElementById(s)).find(".leancloud-visitors-count").text(e.get("time"))},error:function(e,t){console.log("Failed to save Visitor num, with error message: "+t.message)}})}else{var n=new i,o=new AV.ACL;o.setPublicReadAccess(!0),o.setPublicWriteAccess(!0),n.setACL(o),n.set("title",r),n.set("url",s),n.set("time",1),n.save(null,{success:function(e){$(document.getElementById(s)).find(".leancloud-visitors-count").text(e.get("time"))},error:function(e,t){console.log("Failed to create")}})}},error:function(e){console.log("Error:"+e.code+" "+e.message)}})}$(function(){var e=AV.Object.extend("Counter");1==$(".leancloud_visitors").length?addCount(e):1<$(".post-title-link").length&&showTime(e)})</script><script>!function(){var t=document.createElement("script"),e=window.location.protocol.split(":")[0];t.src="https"===e?"https://zz.bdstatic.com/linksubmit/push.js":"http://push.zhanzhang.baidu.com/push.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}()</script><link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css"><script src="/lib/needsharebutton/needsharebutton.js"></script><script>flOptions={iconStyle:"default",boxForm:"horizontal",position:"topRight",networks:"Weibo,Wechat,Douban,QQZone,Twitter,Facebook"},new needShareButton("#needsharebutton-float",flOptions)</script><script type="text/javascript">wpac_init=window.wpac_init||[],wpac_init.push({widget:"Rating",id:12042,el:"wpac-rating",color:"fc6423"}),function(){if(!("WIDGETPACK_LOADED"in window)){WIDGETPACK_LOADED=!0;var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src="//embed.widgetpack.com/widget.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t.nextSibling)}}()</script><script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script><script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script><script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/javascript" src="/js/src/click.js"></script><script type="text/javascript" src="/js/src/bored.js"></script><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({model:{scale:1,hHeadPos:.5,vHeadPos:.618},display:{superSample:2,width:250,height:500,position:"right",hOffset:0,vOffset:-20},mobile:{show:!1,scale:.1,motion:!0},react:{opacityDefault:.9,opacityOnHover:.3},log:!1,pluginJsPath:"lib/",pluginModelPath:"assets/",pluginRootPath:"live2dw/",tagMode:!1})</script></body></html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html><html class="theme-next pisces use-motion" lang="zh-Hans"><head><meta name="generator" content="Hexo 3.9.0"><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><meta name="theme-color" content="#222"><script src="/lib/pace/pace.min.js?v=1.0.2"></script><link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"><link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css"><link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css"><link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4"><link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222"><meta name="keywords" content="Java,"><link rel="alternate" href="/atom.xml" title="SakuraTears的博客" type="application/atom+xml"><meta name="description" content="前言Spliterator 是Java8中加入的一个新接口，是“可分迭代器”（splitable iterator）的意思。它也是用来遍历数据源中的元素的，但它是为并行执行而设计的。 其接口主要代码如下： 123456Public interface Spliterator&amp;lt;T&amp;gt;&amp;#123;	Boolean tryAdvance(Consumer &amp;lt;? super T&amp;gt;)"><meta name="keywords" content="Java"><meta property="og:type" content="article"><meta property="og:title" content="Java8 Spliterator接口"><meta property="og:url" content="https://www.sakuratears.top/blog/Java8-Spliterator接口.html"><meta property="og:site_name" content="SakuraTears的博客"><meta property="og:description" content="前言Spliterator 是Java8中加入的一个新接口，是“可分迭代器”（splitable iterator）的意思。它也是用来遍历数据源中的元素的，但它是为并行执行而设计的。 其接口主要代码如下： 123456Public interface Spliterator&amp;lt;T&amp;gt;&amp;#123;	Boolean tryAdvance(Consumer &amp;lt;? super T&amp;gt;)"><meta property="og:locale" content="zh-Hans"><meta property="og:updated_time" content="2018-10-27T08:37:13.932Z"><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Java8 Spliterator接口"><meta name="twitter:description" content="前言Spliterator 是Java8中加入的一个新接口，是“可分迭代器”（splitable iterator）的意思。它也是用来遍历数据源中的元素的，但它是为并行执行而设计的。 其接口主要代码如下： 123456Public interface Spliterator&amp;lt;T&amp;gt;&amp;#123;	Boolean tryAdvance(Consumer &amp;lt;? super T&amp;gt;)"><script type="text/javascript" id="hexo.configurations">var NexT=window.NexT||{},CONFIG={root:"/",scheme:"Pisces",version:"5.1.4",sidebar:{position:"left",display:"post",offset:12,b2t:!1,scrollpercent:!0,onmobile:!1},fancybox:!0,tabs:!0,motion:{enable:!0,async:!1,transition:{post_block:"fadeIn",post_header:"slideDownIn",post_body:"slideDownIn",coll_header:"slideLeftIn",sidebar:"slideUpIn"}},duoshuo:{userId:"0",author:"博主"},algolia:{applicationID:"",apiKey:"",indexName:"",hits:{per_page:10},labels:{input_placeholder:"Search for Posts",hits_empty:"We didn't find any results for the search: ${query}",hits_stats:"${hits} results found in ${time} ms"}}}</script><link rel="canonical" href="https://www.sakuratears.top/blog/Java8-Spliterator接口.html"><title>Java8 Spliterator接口 | SakuraTears的博客</title><link rel="stylesheet" href="/assets/css/APlayer.min.css" class="aplayer-style-marker"><script src="/assets/js/APlayer.min.js" class="aplayer-script-marker"></script></head><body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans"><div class="container sidebar-position-left page-post-detail"><div class="headband"></div> <a href="https://github.com/javazwt" rel="external nofollow noopener noreferrer" target="_blank"><img style="position:absolute;top:0;left:0;border:0" src="https://s3.amazonaws.com/github/ribbons/forkme_left_gray_6d6d6d.png" alt="Fork me on GitHub"></a><header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader"><div class="header-inner"><div class="site-brand-wrapper"><div class="site-meta"><div class="custom-logo-site-title"><a href="/" class="brand" rel="start"><span class="logo-line-before"><i></i></span> <span class="site-title">SakuraTears的博客</span><span class="logo-line-after"><i></i></span></a></div><h1 class="site-subtitle" itemprop="description">越努力越幸运</h1></div><div class="site-nav-toggle"> <button><span class="btn-bar"></span><span class="btn-bar"></span><span class="btn-bar"></span></button></div></div><nav class="site-nav"><ul id="menu" class="menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i><br> 首页</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i><br> 关于</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i><br> 标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i><br> 分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i><br> 归档</a></li><li class="menu-item menu-item-support"><a href="/support/" rel="section"><i class="menu-item-icon fa fa-fw fa-support"></i><br> 开源支持</a></li><li class="menu-item menu-item-photos"><a href="/photos/" rel="section"><i class="menu-item-icon fa fa-fw fa-photo"></i><br> 相册</a></li><li class="menu-item menu-item-search"><a href="javascript:;" class="popup-trigger"><i class="menu-item-icon fa fa-search fa-fw"></i><br> 搜索</a></li></ul><div class="site-search"><div class="popup search-popup local-search-popup"><div class="local-search-header clearfix"><span class="search-icon"><i class="fa fa-search"></i></span><span class="popup-btn-close"><i class="fa fa-times-circle"></i></span><div class="local-search-input-wrapper"> <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input"></div></div><div id="local-search-result"></div></div></div></nav></div></header><main id="main" class="main"><div class="main-inner"><div class="content-wrap"><div id="content" class="content"><div id="posts" class="posts-expand"><article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article"><div class="post-block"><link itemprop="mainEntityOfPage" href="https://www.sakuratears.top/blog/Java8-Spliterator接口.html"><span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person"><meta itemprop="name" content="SakuraTears"><meta itemprop="description" content=""><meta itemprop="image" content="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/others/avatar.jpg"></span><span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization"><meta itemprop="name" content="SakuraTears的博客"></span><header class="post-header"><h2 class="post-title" itemprop="name headline">Java8 Spliterator接口</h2><div class="post-meta"><span class="post-time"><span class="post-meta-item-icon"><i class="fa fa-calendar-o"></i></span> <span class="post-meta-item-text">发表于</span> <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-27T16:17:00+08:00">2018-10-27</time></span> <span class="post-category"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-folder-o"></i></span> <span class="post-meta-item-text">分类于</span> <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/学习/" itemprop="url" rel="index"><span itemprop="name">学习</span></a></span></span> <span class="post-comments-count"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-comment-o"></i></span><a href="/blog/Java8-Spliterator接口.html#comments" itemprop="discussionUrl"><span class="post-comments-count valine-comment-count" data-xid="/blog/Java8-Spliterator接口.html" itemprop="commentCount"></span></a></span> <span id="/blog/Java8-Spliterator接口.html" class="leancloud_visitors" data-flag-title="Java8 Spliterator接口"><span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-eye"></i></span> <span class="post-meta-item-text">阅读次数&#58;</span><span class="leancloud-visitors-count"></span></span><div class="post-wordcount"><span class="post-meta-item-icon"><i class="fa fa-file-word-o"></i></span> <span class="post-meta-item-text">字数统计&#58;</span> <span title="字数统计">1,645</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-clock-o"></i></span> <span class="post-meta-item-text">阅读时长 &asymp;</span> <span title="阅读时长">7</span></div></div></header><div class="post-body" itemprop="articleBody"><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>Spliterator 是Java8中加入的一个新接口，是“可分迭代器”（splitable iterator）的意思。它也是用来遍历数据源中的元素的，但它是为并行执行而设计的。</p><p>其接口主要代码如下：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Public <span class="class"><span class="keyword">interface</span> <span class="title">Spliterator</span>&lt;<span class="title">T</span>&gt;</span>&#123;</span><br><span class="line">	<span class="function">Boolean <span class="title">tryAdvance</span><span class="params">(Consumer &lt;? <span class="keyword">super</span> T&gt;)</span> action</span>;</span><br><span class="line">	<span class="function">Spliterator&lt;T&gt; <span class="title">trySplit</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function">Long <span class="title">estimateSize</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="function">Int <span class="title">characteristics</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><strong>T</strong> 是Spliterator要遍历的元素类型。</p><p><strong>tryAdvance</strong> 方法的行为类似于普通的Iterator，因为它会按顺序一个一个使用Spliterator中的元素，并且如果还有其他元素要遍历就返回true。</p><p><strong>trySplit</strong> 是专为Spliterator接口而设计的，因为它可以把一些元素划出去分给第二个Spliterator，让他们两个并行处理。</p><p><strong>estimateSize</strong>方法估计还剩多少元素需要遍历，因为即使不那么精确，快速算出来的值也有助于让拆分均匀点。</p><blockquote><p>注：将Stream流拆分成多个部分的算法是个递归过程，第一步第一个Spliterator调用trySplit，生成两个Spliterator，第二步这两个Spliterator调用trySplit，生成4个Spliterator，直到调用Spliterator的trySplit 方法后返回null，表示这部分Spliterator不能在分割。</p></blockquote><p>这个拆分过程也受Spliterator本身特性的影响，而特性是通过<strong>characteristics</strong>方法声明的。</p><p>我们来简单看一下它的特性的常用值。</p><table><thead><tr><th>特性</th><th>含义</th></tr></thead><tbody><tr><td>ORDERED</td><td>按元素的既定顺序遍历和划分</td></tr><tr><td>DISTINCT</td><td>对于任一遍历过的元素x，y,x.equals(y)返回false</td></tr><tr><td>SORTED</td><td>遍历元素按照一个预定义顺序排序</td></tr><tr><td>SIZED</td><td>Spliterator由一个已知大小的数据源建立，estimateSize会返回准确值</td></tr><tr><td>NONNULL</td><td>保证遍历元素不会为空</td></tr><tr><td>IMMUTABLE</td><td>Spliterator的数据源不能被修改，（不能 添加、删除、修改任何元素）</td></tr><tr><td>CONCURRENT</td><td>Spliterator的数据源可以被其他线程同时修改而无需同步</td></tr><tr><td>SUBSIZED</td><td>该Spliterator和从它拆分出来的Spliterator都是SIZED的</td></tr></tbody></table><h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><p>为什么我们需要了解这个类，有的时候甚至要实现这个类呢？</p><p>我们来看一个例子。</p><p>对于下面一个String，我想统计下单词数量。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> String WORD=<span class="string">"Hello World Happy EveryDay Good good study day day up let us study Spliterator"</span>;</span><br></pre></td></tr></table></figure><p>我们需要创建一个counter来累计流中字符，以及在counter中把它们结合起来的逻辑，如下：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WordCounter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> counter;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">boolean</span> lastSpace;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">WordCounter</span><span class="params">(<span class="keyword">int</span> counter, <span class="keyword">boolean</span> lastSpace)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.counter = counter;</span><br><span class="line">        <span class="keyword">this</span>.lastSpace = lastSpace;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//遍历一个个的Character</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> WordCounter <span class="title">accumulate</span><span class="params">(Character c)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(Character.isWhitespace(c))&#123;</span><br><span class="line">            <span class="keyword">return</span> lastSpace ? <span class="keyword">this</span> : <span class="keyword">new</span> WordCounter(counter,<span class="keyword">true</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="comment">//上一个字符是空格，而当前遍历的字符不是空格时，将单词计数器加一</span></span><br><span class="line">            <span class="keyword">return</span> lastSpace ? <span class="keyword">new</span> WordCounter(counter+<span class="number">1</span>,<span class="keyword">false</span>):<span class="keyword">this</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//合并两个WordCounter，将其计数器加起来</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> WordCounter <span class="title">combine</span><span class="params">(WordCounter wordCounter)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> WordCounter(counter+wordCounter.counter,wordCounter.lastSpace);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCounter</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> counter;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>这时候，我们在书写一个规约Character流统计单词个数就很简单了。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">countWords</span><span class="params">(Stream&lt;Character&gt; stream)</span></span>&#123;</span><br><span class="line">	WordCounter wordCounter=stream.reduce(<span class="keyword">new</span> WordCounter(<span class="number">0</span>,<span class="keyword">true</span>),WordCounter::accumulate,WordCounter::combine);</span><br><span class="line">	<span class="keyword">return</span> wordCounter.getCounter();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;Character&gt; stream= IntStream.range(<span class="number">0</span>,WORD.length()).mapToObj(WORD::charAt);</span><br><span class="line">System.out.println(countWords(stream));</span><br></pre></td></tr></table></figure><p>输出14。结果是正确的。</p><p>现在我们让他在并行流上进行工作：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Stream&lt;Character&gt; stream= IntStream.range(<span class="number">0</span>,WORD.length()).mapToObj(WORD::charAt).parallel();</span><br></pre></td></tr></table></figure><p>结果输出26。显然这是不正确的。一脸懵逼。</p><p>为什么会出现这种情况呢？</p><p>因为在并行流进行Spliterator分割时，把一个单词拆分成两部分了，导致结果变大。这显然不是我们想看到的。</p><h1 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h1><p>我们要处理这种情况，就要指定分割原则，不要让程序把整个单词切开。</p><p>因此我们需要编写自己的Spliterator才能让上述问题在并行流下工作。如下：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WordCounterSpliterator</span> <span class="keyword">implements</span> <span class="title">Spliterator</span>&lt;<span class="title">Character</span>&gt; </span>&#123;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> String string;</span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">int</span> currentChar=<span class="number">0</span>;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">WordCounterSpliterator</span><span class="params">(String string)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">this</span>.string = string;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">tryAdvance</span><span class="params">(Consumer&lt;? <span class="keyword">super</span> Character&gt; action)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//处理当前字符</span></span><br><span class="line">		action.accept(string.charAt(currentChar++));</span><br><span class="line">		<span class="comment">//如果还有字符要处理，返回true</span></span><br><span class="line">		<span class="keyword">return</span> currentChar&lt;string.length();</span><br><span class="line">&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Spliterator&lt;Character&gt; <span class="title">trySplit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">int</span> currentSize=string.length()-currentChar;</span><br><span class="line">		<span class="comment">//返回null表示要处理的String已经足够小</span></span><br><span class="line">		<span class="keyword">if</span>(currentSize&lt;<span class="number">10</span>)&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">//将试探拆分位置设定到要解析的文字中间</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> splitPos=currentSize/<span class="number">2</span>+currentChar;splitPos&lt;string.length();splitPos++)&#123;</span><br><span class="line">			<span class="comment">//如果是空格就开始拆分，不是空格将拆分位置前进直到下一个空格</span></span><br><span class="line">			<span class="keyword">if</span>(Character.isWhitespace(string.charAt(splitPos)))&#123;</span><br><span class="line">				<span class="comment">//创建一个新的WordCounterSpliterator来解析String从开始到拆分位置的部分</span></span><br><span class="line">				Spliterator&lt;Character&gt; spliterator=</span><br><span class="line">					<span class="keyword">new</span> WordCounterSpliterator(string.substring(currentChar,splitPos));</span><br><span class="line">					<span class="comment">//将这个WordCounterSpliterator的起始位置设为拆分位置</span></span><br><span class="line">					currentChar=splitPos;</span><br><span class="line">					<span class="keyword">return</span> spliterator;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">estimateSize</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> string.length()-currentChar;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">characteristics</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> ORDERED+SIZED+SUBSIZED+NONNULL+IMMUTABLE;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><strong>tryAdvance</strong>方法把String中当前位置的Character传给了Consumer，并让位置加一。作为参数传递的内部类Consumer，在遍历流时将要处理的Character传递给要执行的函数。如果新的指针位置小于String总长度，说明没有遍历完，返回true继续遍历。</p><p><strong>trySplit</strong>方法，首先我们设置了一个拆分下限——10个Character，实际应用中我们应尽量提高这个长度避免生成太多的任务。如果长度小于这个数，就返回空无需继续拆分。否则就把试探拆分位置放到要解析的String块中间，但不能直接使用此位置，应该看看是不是空格，如果是就拆分，如果不是，就向前找，找到空格进行拆分，避免把一个单词拆成两份。</p><p><strong>estimatedSize</strong>方法返回的是这个Spliterator解析的String的总长度和当前遍历位置的差值。</p><p><strong>characteristic</strong>方法告诉这个框架是ORDERED（String的每个Character的默认顺序），SIZED（estimatedSize方法返回值是精确的），SUBSIZED（trySplit分出来的Spliterator大小也是固定的），NONNULL（String里面的Character不可能为null），IMMUTABLE（String本身就不可变化）。</p><p>下面我们测试一下我们的WordCounterSpliterator 。</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Spliterator&lt;Character&gt; spliterator=<span class="keyword">new</span> WordCounterSpliterator(WORD);</span><br><span class="line">Stream&lt;Character&gt; stream= StreamSupport.stream(spliterator,<span class="keyword">true</span>);</span><br><span class="line">System.out.println(countWords(stream));</span><br></pre></td></tr></table></figure><p>可以看到输出结果为14.</p><h1 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h1><p>可以看到，并行流不是所有情况都适用的，有些情况要定制自己的Spliterator才能使并行流正常工作。这个例子或许运行效率并行比不上串行，但是在大数据下，比如分析一个文本文件中的单词数量，就能明显看到并行带来的速度优势了。</p></div><div><div style="text-align:center;color:#ccc;font-size:15px"><br><br><br> -------------文章结束啦 ~\(≧▽≦)/~ 感谢您的阅读-------------</div><br></div><div><div id="wechat_subscriber" style="display:block;padding:10px 0;margin:20px auto;width:100%;text-align:center"> <img id="wechat_subscriber_qcode" src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/others/qrcode_wechat_subscriber.jpg" alt="SakuraTears wechat" style="width:200px;max-width:100%"><div>扫一扫关注我的公众号</div></div></div><div><div style="padding:10px 0;margin:20px auto;width:90%;text-align:center"><div>您的支持就是我创作的动力！</div> <button id="rewardButton" disable="enable" onclick='var qr=document.getElementById("QR");"none"===qr.style.display?qr.style.display="block":qr.style.display="none"'> <span>打赏</span></button><div id="QR" style="display:none"><div id="wechat" style="display:inline-block"> <img id="wechat_qr" src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/others/wechatpay.png" alt="SakuraTears 微信支付"><p>微信支付</p></div><div id="alipay" style="display:inline-block"> <img id="alipay_qr" src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/others/alipay.jpg" alt="SakuraTears 支付宝"><p>支付宝</p></div></div></div></div><div><ul class="post-copyright"><li class="post-copyright-author"> <strong>本文作者：</strong> SakuraTears</li><li class="post-copyright-link"> <strong>本文链接：</strong> <a href="https://www.sakuratears.top/blog/Java8-Spliterator接口.html" title="Java8 Spliterator接口">https://www.sakuratears.top/blog/Java8-Spliterator接口.html</a></li><li class="post-copyright-license"> <strong>版权声明：</strong> 本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow noopener noreferrer" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！</li></ul></div><footer class="post-footer"><div class="post-tags"><a href="/tags/Java/" rel="tag"><i class="fa fa-tag"></i> Java</a></div><div class="post-widgets"><div class="wp_rating"><div style="color:rgba(0,0,0,.75);font-size:16px;letter-spacing:8px">(&gt;来评分吧&lt;)</div><div id="wpac-rating"></div></div></div><div class="post-nav"><div class="post-nav-next post-nav-item"><a href="/blog/和前同事闲聊小记.html" rel="next" title="和前同事闲聊小记"><i class="fa fa-chevron-left"></i> 和前同事闲聊小记</a></div><span class="post-nav-divider"></span><div class="post-nav-prev post-nav-item"> <a href="/blog/封装构建基于ES的Java-API包.html" rel="prev" title="封装构建基于ES的Java API包">封装构建基于ES的Java API包<i class="fa fa-chevron-right"></i></a></div></div></footer></div></article><div class="post-spread"></div></div></div><div class="comments" id="comments"></div></div><div class="sidebar-toggle"><div class="sidebar-toggle-line-wrap"><span class="sidebar-toggle-line sidebar-toggle-line-first"></span><span class="sidebar-toggle-line sidebar-toggle-line-middle"></span><span class="sidebar-toggle-line sidebar-toggle-line-last"></span></div></div><aside id="sidebar" class="sidebar"><div class="sidebar-inner"><ul class="sidebar-nav motion-element"><li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap"> 文章目录</li><li class="sidebar-nav-overview" data-target="site-overview-wrap"> 站点概览</li></ul><section class="site-overview-wrap sidebar-panel"><div class="site-overview"><div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person"> <img class="site-author-image" itemprop="image" src="https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/others/avatar.jpg" alt="SakuraTears"><p class="site-author-name" itemprop="name">SakuraTears</p><p class="site-description motion-element" itemprop="description"></p></div><nav class="site-state motion-element"><div class="site-state-item site-state-posts"> <a href="/archives/"><span class="site-state-item-count">140</span> <span class="site-state-item-name">日志</span></a></div><div class="site-state-item site-state-categories"> <a href="/categories/index.html"><span class="site-state-item-count">3</span> <span class="site-state-item-name">分类</span></a></div><div class="site-state-item site-state-tags"> <a href="/tags/index.html"><span class="site-state-item-count">104</span> <span class="site-state-item-name">标签</span></a></div></nav><div class="feed-link motion-element"><a href="/atom.xml" rel="alternate"><i class="fa fa-rss"></i> RSS</a></div><div class="links-of-author motion-element"><span class="links-of-author-item"><a href="https://github.com/JavaZWT" target="_blank" title="GitHub" rel="external nofollow noopener noreferrer"><i class="fa fa-fw fa-github"></i> GitHub</a></span><span class="links-of-author-item"><a href="mailto:971258230@qq.com" target="_blank" title="Email" rel="external nofollow noopener noreferrer"><i class="fa fa-fw fa-envelope"></i> Email</a></span><span class="links-of-author-item"><a href="http://wpa.qq.com/msgrd?v=3&uin=971258230&site=qq&menu=yes" target="_blank" title="QQ" rel="external nofollow noopener noreferrer"><i class="fa fa-fw fa-qq"></i> QQ</a></span><span class="links-of-author-item"><a href="https://blog.csdn.net/JavaZWT" target="_blank" title="CSDN" rel="external nofollow noopener noreferrer"><i class="fa fa-fw fa-copyright"></i> CSDN</a></span></div><div class="links-of-blogroll motion-element links-of-blogroll-block"><div class="links-of-blogroll-title" style="color:#fc6423"><i class="fa fa-fw fa-link"></i> 友情链接</div><ul class="links-of-blogroll-list"><li class="links-of-blogroll-item"> <a href="https://www.sakuratears.top" title="SakuraTears的小乖乖" target="_blank">SakuraTears的小乖乖</a></li><li class="links-of-blogroll-item"> <a href="http://jm.taobao.org/" title="阿里巴巴中间件团队博客" target="_blank" rel="external nofollow noopener noreferrer">阿里巴巴中间件团队博客</a></li><li class="links-of-blogroll-item"> <a href="https://blog.ymfe.org/" title="去哪儿网大前端技术博客" target="_blank" rel="external nofollow noopener noreferrer">去哪儿网大前端技术博客</a></li></ul></div><div class="links-of-blogroll motion-element links-of-blogroll-inline" style="opacity:1;display:block;transform:translateX(0);margin-top:8px"></div><div id="aplayer-rWUYQYrx" class="aplayer aplayer-tag-marker" style="margin:30px 0 30px 0"></div><script>var options={narrow:!1,autoplay:!1,showlrc:0,mutex:!0,theme:"#e6d0b2",preload:"none",listmaxheight:"500px",music:[{title:"Sakura Tears",author:"Nigel Silin",url:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/Nigel%20Silin%20-%20Sakura%20Tears.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music1.jpeg"},{title:"东京不太热",author:"封茗囧菌",url:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/%E5%B0%81%E8%8C%97%E5%9B%A7%E8%8F%8C%20-%20%E4%B8%9C%E4%BA%AC%E4%B8%8D%E5%A4%AA%E7%83%AD.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music2.jpeg"},{title:"春风吹",author:"锦零",url:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/%E9%94%A6%E9%9B%B6%20-%20%E6%98%A5%E9%A3%8E%E5%90%B9%EF%BC%88Cover%20%E6%96%B9%E5%A4%A7%E5%90%8C%EF%BC%89.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music3.jpeg"},{title:"Secret",author:"茶太",url:"https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/%E8%8C%B6%E5%A4%AA%20-%20Secret.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music4.jpeg"},{title:"secret base ~君がくれたもの~",author:"茅野愛衣,戸松遥,早見沙織",url:"https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/%E8%8C%85%E9%87%8E%E6%84%9B%E8%A1%A3%2C%E6%88%B8%E6%9D%BE%E9%81%A5%2C%E6%97%A9%E8%A6%8B%E6%B2%99%E7%B9%94%20-%20secret%20base%20%7E%E5%90%9B%E3%81%8B%E3%82%99%E3%81%8F%E3%82%8C%E3%81%9F%E3%82%82%E3%81%AE%7E%20%2810%20years%20after%20Ver.%29.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music5.jpeg"},{title:"ファンファーレ",author:"sumika",url:"https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/sumika%20-%20%E3%83%95%E3%82%A1%E3%83%B3%E3%83%95%E3%82%A1%E3%83%BC%E3%83%AC.mp3",pic:"http://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music6.jpeg"},{title:"心做し",author:"双笙",url:"https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/%E5%8F%8C%E7%AC%99%20-%20%E5%BF%83%E5%81%9A%E3%81%97%EF%BC%88Cover%20GUMI%EF%BC%89.mp3",pic:"https://sakuratears.oss-cn-beijing.aliyuncs.com/blog/music/music7.jpeg"}]};options.element=document.getElementById("aplayer-rWUYQYrx");var ap=new APlayer(options);window.aplayers||(window.aplayers=[]),window.aplayers.push(ap)</script></div></section><section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active"><div class="post-toc"><div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#例子"><span class="nav-number">2.</span> <span class="nav-text">例子</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#实践"><span class="nav-number">3.</span> <span class="nav-text">实践</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结论"><span class="nav-number">4.</span> <span class="nav-text">结论</span></a></li></ol></div></div></section></div></aside></div></main><footer id="footer" class="footer"><div class="footer-inner"><div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2021</span><span class="with-love"><i class="fa fa-user"></i></span> <span class="author" itemprop="copyrightHolder">SakuraTears</span> <span class="post-meta-divider">|</span><span class="post-meta-item-icon"><i class="fa fa-area-chart"></i></span> <span class="post-meta-item-text">Site words total count&#58;</span> <span title="Site words total count">570.5k</span></div> <span id="timeDate">载入天数...</span><span id="times">载入时分秒...</span><script>var now=new Date;function createtime(){var n=new Date("05/20/2018 00:00:00");now.setTime(now.getTime()+250),days=(now-n)/1e3/60/60/24,dnum=Math.floor(days),hours=(now-n)/1e3/60/60-24*dnum,hnum=Math.floor(hours),1==String(hnum).length&&(hnum="0"+hnum),minutes=(now-n)/1e3/60-1440*dnum-60*hnum,mnum=Math.floor(minutes),1==String(mnum).length&&(mnum="0"+mnum),seconds=(now-n)/1e3-86400*dnum-3600*hnum-60*mnum,snum=Math.round(seconds),1==String(snum).length&&(snum="0"+snum),document.getElementById("timeDate").innerHTML="本站已运行 "+dnum+" 天 ",document.getElementById("times").innerHTML=hnum+" 小时 "+mnum+" 分 "+snum+" 秒"}setInterval("createtime()",250)</script><div class="footer-custom">Thanks to <a target="_blank" href="https://hexo.io/" rel="external nofollow noopener noreferrer">Hexo</a> | <a target="_blank" href="https://github.com/" rel="external nofollow noopener noreferrer">GitHub</a> | <a target="_blank" href="https://nodejs.org/" rel="external nofollow noopener noreferrer">Node.js</a></div><div class="busuanzi-count"><script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script> <span class="site-uv"><i class="fa fa-user">总访客数</i><span class="busuanzi-value" id="busuanzi_value_site_uv"></span> <i class="fa">人</i></span> <span class="site-pv"><i class="fa fa-eye">总浏览量</i><span class="busuanzi-value" id="busuanzi_value_site_pv"></span> <i class="fa">次</i></span></div></div></footer><div class="back-to-top"><i class="fa fa-arrow-up"></i> <span id="scrollpercent"><span>0</span>%</span></div><div id="needsharebutton-float"><span class="btn"><i class="fa fa-share-alt" aria-hidden="true"></i></span></div></div><script type="text/javascript">"[object Function]"!==Object.prototype.toString.call(window.Promise)&&(window.Promise=null)</script><script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script><script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script><script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script><script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script><script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script><script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script><script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script><script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script><script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script><script src="//unpkg.com/valine/dist/Valine.min.js"></script><script type="text/javascript">
+    var GUEST = ['nick','mail','link'];
+    var guest = 'nick,mail,link';
+    guest = guest.split(',').filter(item=>{
+      return GUEST.indexOf(item)>-1;
+    });
+    new Valine({
+        el: '#comments' ,
+        verify: false,
+        notify: false,
+        appId: 'n81D2zVCOBCRyTrhhwoBjui0-gzGzoHsz',
+        appKey: '2II35ez36s8c4KvXJNGVeJ5O',
+        placeholder: '(*^_^*)看了这么多，可能你有话想说',
+        avatar:'mm',
+        guest_info:guest,
+        pageSize:'10' || 10,
+    });
+    //新增以下代码即可，可以移除.info下所有子节点。
+    var infoEle = document.querySelector('#comments .info');
+      if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0){
+        infoEle.childNodes.forEach(function(item) {
+          item.parentNode.removeChild(item);
+        });
+      }
+  </script><script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script><script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script><script>AV.initialize("n81D2zVCOBCRyTrhhwoBjui0-gzGzoHsz","2II35ez36s8c4KvXJNGVeJ5O")</script><script>function showTime(e){var t=new AV.Query(e),c=[],u=$(".leancloud_visitors");u.each(function(){c.push($(this).attr("id").trim())}),t.containedIn("url",c),t.find().done(function(e){var t=".leancloud-visitors-count";if(0!==e.length){for(var n=0;n<e.length;n++){var o=e[n],i=o.get("url"),s=o.get("time"),r=document.getElementById(i);$(r).find(t).text(s)}for(n=0;n<c.length;n++){i=c[n],r=document.getElementById(i);var l=$(r).find(t);""==l.text()&&l.text(0)}}else u.find(t).text(0)}).fail(function(e,t){console.log("Error: "+t.code+" "+t.message)})}function addCount(i){var e=$(".leancloud_visitors"),s=e.attr("id").trim(),r=e.attr("data-flag-title").trim(),t=new AV.Query(i);t.equalTo("url",s),t.find({success:function(e){if(0<e.length){var t=e[0];t.fetchWhenSave(!0),t.increment("time"),t.save(null,{success:function(e){$(document.getElementById(s)).find(".leancloud-visitors-count").text(e.get("time"))},error:function(e,t){console.log("Failed to save Visitor num, with error message: "+t.message)}})}else{var n=new i,o=new AV.ACL;o.setPublicReadAccess(!0),o.setPublicWriteAccess(!0),n.setACL(o),n.set("title",r),n.set("url",s),n.set("time",1),n.save(null,{success:function(e){$(document.getElementById(s)).find(".leancloud-visitors-count").text(e.get("time"))},error:function(e,t){console.log("Failed to create")}})}},error:function(e){console.log("Error:"+e.code+" "+e.message)}})}$(function(){var e=AV.Object.extend("Counter");1==$(".leancloud_visitors").length?addCount(e):1<$(".post-title-link").length&&showTime(e)})</script><script>!function(){var t=document.createElement("script"),e=window.location.protocol.split(":")[0];t.src="https"===e?"https://zz.bdstatic.com/linksubmit/push.js":"http://push.zhanzhang.baidu.com/push.js";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(t,s)}()</script><link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css"><script src="/lib/needsharebutton/needsharebutton.js"></script><script>flOptions={iconStyle:"default",boxForm:"horizontal",position:"topRight",networks:"Weibo,Wechat,Douban,QQZone,Twitter,Facebook"},new needShareButton("#needsharebutton-float",flOptions)</script><script type="text/javascript">wpac_init=window.wpac_init||[],wpac_init.push({widget:"Rating",id:12042,el:"wpac-rating",color:"fc6423"}),function(){if(!("WIDGETPACK_LOADED"in window)){WIDGETPACK_LOADED=!0;var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src="//embed.widgetpack.com/widget.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t.nextSibling)}}()</script><script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script><script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script><script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><script type="text/javascript" src="/js/src/click.js"></script><script type="text/javascript" src="/js/src/bored.js"></script><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({model:{scale:1,hHeadPos:.5,vHeadPos:.618},display:{superSample:2,width:250,height:500,position:"right",hOffset:0,vOffset:-20},mobile:{show:!1,scale:.1,motion:!0},react:{opacityDefault:.9,opacityOnHover:.3},log:!1,pluginJsPath:"lib/",pluginModelPath:"assets/",pluginRootPath:"live2dw/",tagMode:!1})</script></body></html>
