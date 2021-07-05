@@ -317,14 +317,14 @@
   </url>
   
   <url>
-    <loc>https://www.sakuratears.top/blog/Java-10-%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B%E6%8E%A8%E6%96%AD.html</loc>
+    <loc>https://www.sakuratears.top/blog/Java-10-%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E7%9A%84%E5%8F%91%E5%B8%83%E7%89%88%E6%9C%AC.html</loc>
     
     <lastmod>2021-01-10</lastmod>
     
   </url>
   
   <url>
-    <loc>https://www.sakuratears.top/blog/Java-10-%E5%9F%BA%E4%BA%8E%E6%97%B6%E9%97%B4%E7%9A%84%E5%8F%91%E5%B8%83%E7%89%88%E6%9C%AC.html</loc>
+    <loc>https://www.sakuratears.top/blog/Java-10-%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E7%B1%BB%E5%9E%8B%E6%8E%A8%E6%96%AD.html</loc>
     
     <lastmod>2021-01-10</lastmod>
     
@@ -1145,6 +1145,13 @@
   </url>
   
   <url>
+    <loc>https://www.sakuratears.top/tags/CAS/</loc>
+    <lastmod>2021-07-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.sakuratears.top/tags/CountDownLatch/</loc>
     <lastmod>2021-07-05</lastmod>
     <changefreq>daily</changefreq>
@@ -1160,13 +1167,6 @@
   
   <url>
     <loc>https://www.sakuratears.top/tags/Semaphare/</loc>
-    <lastmod>2021-07-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.sakuratears.top/tags/CAS/</loc>
     <lastmod>2021-07-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -1236,6 +1236,13 @@
   </url>
   
   <url>
+    <loc>https://www.sakuratears.top/tags/Java-10/</loc>
+    <lastmod>2021-07-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.sakuratears.top/tags/JVM/</loc>
     <lastmod>2021-07-05</lastmod>
     <changefreq>daily</changefreq>
@@ -1265,13 +1272,6 @@
   
   <url>
     <loc>https://www.sakuratears.top/tags/Token/</loc>
-    <lastmod>2021-07-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.sakuratears.top/tags/Java-10/</loc>
     <lastmod>2021-07-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -1502,6 +1502,13 @@
   </url>
   
   <url>
+    <loc>https://www.sakuratears.top/tags/Linux/</loc>
+    <lastmod>2021-07-05</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://www.sakuratears.top/tags/Spring/</loc>
     <lastmod>2021-07-05</lastmod>
     <changefreq>daily</changefreq>
@@ -1524,13 +1531,6 @@
   
   <url>
     <loc>https://www.sakuratears.top/tags/%E5%A4%9A%E6%95%B0%E6%8D%AE%E6%BA%90/</loc>
-    <lastmod>2021-07-05</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://www.sakuratears.top/tags/Linux/</loc>
     <lastmod>2021-07-05</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
