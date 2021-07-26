@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.sakuratears.top/blog/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E7%BB%AD%E6%9C%9F%E9%97%AE%E9%A2%98.html</loc>
+    <lastmod>2021-07-26</lastmod>
+  </url>
+  <url>
     <loc>https://www.sakuratears.top/blog/Mysql%E9%94%81%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86.html</loc>
     <lastmod>2021-07-20</lastmod>
   </url>
@@ -185,11 +189,11 @@
     <lastmod>2021-01-10</lastmod>
   </url>
   <url>
-    <loc>https://www.sakuratears.top/blog/Java-9-Stream-API%E5%8F%98%E6%9B%B4.html</loc>
+    <loc>https://www.sakuratears.top/blog/Java-9-JShell.html</loc>
     <lastmod>2021-01-10</lastmod>
   </url>
   <url>
-    <loc>https://www.sakuratears.top/blog/Java-9-JShell.html</loc>
+    <loc>https://www.sakuratears.top/blog/Java-9-Stream-API%E5%8F%98%E6%9B%B4.html</loc>
     <lastmod>2021-01-10</lastmod>
   </url>
   <url>
