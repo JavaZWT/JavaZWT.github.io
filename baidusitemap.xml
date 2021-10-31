@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://www.sakuratears.top/blog/Springboot-MongoDB-%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%AE%9A%E4%B9%89%E4%B8%BB%E9%94%AE.html</loc>
+    <lastmod>2021-10-31</lastmod>
+  </url>
+  <url>
     <loc>https://www.sakuratears.top/blog/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%BA%BF%E4%B8%8AOOM%E9%97%AE%E9%A2%98%E6%8E%92%E6%9F%A5.html</loc>
     <lastmod>2021-09-21</lastmod>
   </url>
@@ -173,11 +177,11 @@
     <lastmod>2021-01-10</lastmod>
   </url>
   <url>
-    <loc>https://www.sakuratears.top/blog/%E3%80%90%E8%BD%AC%E3%80%91%E3%80%90%E8%AF%91%E3%80%91Java-14-%E7%89%B9%E6%80%A7%E5%8F%8A%E6%9B%B4%E6%96%B0.html</loc>
+    <loc>https://www.sakuratears.top/blog/%E3%80%90%E8%BD%AC%E3%80%91%E3%80%90%E8%AF%91%E3%80%91The-Twelve-Factor-App.html</loc>
     <lastmod>2021-01-10</lastmod>
   </url>
   <url>
-    <loc>https://www.sakuratears.top/blog/%E3%80%90%E8%BD%AC%E3%80%91%E3%80%90%E8%AF%91%E3%80%91The-Twelve-Factor-App.html</loc>
+    <loc>https://www.sakuratears.top/blog/%E3%80%90%E8%BD%AC%E3%80%91%E3%80%90%E8%AF%91%E3%80%91Java-14-%E7%89%B9%E6%80%A7%E5%8F%8A%E6%9B%B4%E6%96%B0.html</loc>
     <lastmod>2021-01-10</lastmod>
   </url>
   <url>
@@ -217,11 +221,11 @@
     <lastmod>2021-01-10</lastmod>
   </url>
   <url>
-    <loc>https://www.sakuratears.top/blog/Java-9-Stream-API%E5%8F%98%E6%9B%B4.html</loc>
+    <loc>https://www.sakuratears.top/blog/Java-9-JShell.html</loc>
     <lastmod>2021-01-10</lastmod>
   </url>
   <url>
-    <loc>https://www.sakuratears.top/blog/Java-9-JShell.html</loc>
+    <loc>https://www.sakuratears.top/blog/Java-9-Stream-API%E5%8F%98%E6%9B%B4.html</loc>
     <lastmod>2021-01-10</lastmod>
   </url>
   <url>
